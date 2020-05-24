@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html>
+<!-- index for ws.js or totally online Web IDE -->
+
+<head>
+  <meta charset="utf-8" />
+  <!--
+  <meta http-equiv="Cache-Control" content="no-cache" />
+  <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name=apple-mobile-web-app-status-bar-style content="black">
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="mobile-web-app-capable" content="yes" />
+
+  <link rel="icon" href="favicon.ico">
+  <link rel="manifest" href="webapp_manifest.json">
+
+  <link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.10.1.custom.css" />
+  <link rel="stylesheet" href="css/libs/jquery.treeview.css" />
+  <link rel="stylesheet" href="js/libs/codemirror/codemirror.css" />
+  <link rel="stylesheet" href="js/libs/codemirror/addon/dialog/dialog.css" />
+  <link rel="stylesheet" href="js/libs/codemirror/addon/fold/foldgutter.css" />
+  <link rel="stylesheet" href="js/libs/codemirror/addon/hint/show-hint.css" />
+  <link rel="stylesheet" href="js/libs/codemirror/addon/lint/lint.css" />
+  <link rel="stylesheet" href="js/libs/codemirror/addon/search/matchesonscrollbar.css" />
+  <link rel="stylesheet" href="js/libs/codemirror/addon/tern/tern.css" />
+  <link rel="stylesheet" href="js/libs/splitster/splitster.css" />
+  <link rel="stylesheet" href="js/libs/toastr/toastr.css" />
+  <link rel="stylesheet" href="js/libs/guiders/guiders.css" />
+
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/typography.css" />
+  <link rel="stylesheet" href="css/abstracts.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/icons.css" />
+
+  <title>교육 로봇 테스트 페이지</title>
+
+  <script>
+    // Force HTTPS - needed for web bluetooth
+    var l = window.location.toString();
+    if (l.substr(0, 7) == "http://" && !window.location.port)
+      window.location = "https://" + l.substr(7);
+  </script>
+
+  <style>
+    .display-none {
+      display: none
+    }
+  </style>
+
+  <style>
+    .b01_simple_rollover {
+      font-size: 40px;
+      width: 100px;
+      height: 100px;
+      color: #000000;
+      border: #000000 solid 1px;
+      padding: 10px;
+      background-color: ivory;
+      border: none;
+    }
+
+    .b01_simple_rollover:hover {
+      /*color: #ffffff;*/
+      background-color: #ffffff;
+    }
+
+    .layer {
+      display: none;
+      height: 100%;
+      width: 100%;
+      background-color: ivory;
+      text-align: center;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    input[type="checkbox"]:checked + label {
+        background-color: #666666;
+    }
+    
+  </style>
+
+    
+</head>
+
+<body>
+
+  <div class="window window--app">
+
+    <!-- Title Bar -->
+    <div class="window__title-bar title-bar" style="-webkit-app-region: drag">
+      <h5 class="title-bar__title">교육 로봇 테스트 페이지</h5>
+      <div class="title-bar__buttons"></div>
+    </div>
+
+
+    <!-- Viewport -->
+    <div class="window__viewport">
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="h-split">
+          <div class="h-split__left toolbar__buttons toolbar__buttons--left"></div>
+          <div class="h-split__right toolbar__buttons toolbar__buttons--right"></div>
+        </div>
+      </div>
+
+
+      <!-- Splitter -->
+      <div class="split-pane">
+        <div class="split-pane__left">
+          <div class="split-pane__loading">LOADING ...</div>
+          <div class="editor editor--terminal">
+            <div class="sidebar editor__sidebar" id="sidebar">
+              <div class="v-split">
+                <div class="v-split__top sidebar__buttons sidebar__buttons--top"></div>
+                <div class="v-split__bottom sidebar__buttons sidebar__buttons--bottom"> 
+                  <button onclick='Control()'>Control Pannel</button>
+                  <button onclick='StartSensor()'>Start Sensor</button>
+                  <button onclick='EndSensor()'>End Sensor</button>
+                  <button onclick='LEDMatrix()'>LED Matrix</button>
+                </div>
+              </div>
+            </div>
+            <div id='console' class="canvas editor__canvas editor__canvas__terminal"></div>
+            <div id='control' class="layer" align="center" style="border:2px solid blue;">
+              <div style='display:table; height:100%; width:20%; float:left;'>
+                <div style='display: table-cell; vertical-align:middle; text-align:center;'>
+                  <button class="b01_simple_rollover" onmousedown='go()' ontouchstart='go()' onmouseup='stop()'
+                    ontouchend='stop()'>▲</button><br /><br /><br /><br /><br />
+                  <button class="b01_simple_rollover" onmousedown='turnL()' ontouchstart='turnL()' onmouseup='stop()'
+                    ontouchend='stop()'>◀</button><br /><br /><br /><br /><br />
+                  <button class="b01_simple_rollover" onmousedown='back()' ontouchstart='back()' onmouseup='stop()'
+                    ontouchend='stop()'>▼</button>
+                </div>
+              </div>
+              <div style='display:table; height:100%; width:50%; float:left;'>
+                <div style='display: table-cell; vertical-align:middle; text-align:center;'>
+                  <div style='height:30%;'>
+                    <!--<h1>상단 프레임</h1>-->
+                    <h3>로봇 구동 <span id="clock">0</span> 초 째입니다.</h3>
+                    <button onclick="clock_start()">Clock start</button>
+                    <button onclick="clock_end()">Clock end</button>
+                  </div>
+                  <div style='height:30%;'>
+                    <h2 id='ir_sensor'></h2>
+                    <canvas id='ir_graph' width='300' height='100'></canvas>
+                  </div>
+                  <div style='height:30%;'>
+                    <!--<h1>하단 프레임</h1>-->
+                    <table style='width:100%'>
+                      <tr>
+                        <td width="20%">
+                          <div><img src="img/alarm.jpg" width="50%" onmousedown='robot_alarm()'
+                              ontouchstart='robot_alarm()' onmouseup='robot_alarm_stop()'
+                              ontouchend='robot_alarm_stop()' /> <img src="img/restart.jpg" width="50%"
+                              onclick="robot_resume()" /></div>
+                        </td>
+                        <td>
+                          <h3>SPEED : <div style='display:inline;' id='speed'>0</div> rev/s</h3>
+                        </td>
+                        <td width="20%">
+                          <div><img src="img/pause.jpg" width="50%" onclick="robot_wait()" /> <img src="img/stop.jpg"
+                              width="50%" onclick="robot_stop()" /></div>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div style='display:table; height:100%; width:20%; float:right;'>
+                <div style='display: table-cell; vertical-align:middle; text-align:center;'>
+                  <button class="b01_simple_rollover" onmousedown='go()' ontouchstart='go()' onmouseup='stop()'
+                    ontouchend='stop()'>▲</button><br /><br /><br /><br /><br />
+                  <button class="b01_simple_rollover" onmousedown='turnR()' ontouchstart='turnR()' onmouseup='stop()'
+                    ontouchend='stop()'>▶</button><br /><br /><br /><br /><br />
+                  <button class="b01_simple_rollover" onmousedown='back()' ontouchstart='back()' onmouseup='stop()'
+                    ontouchend='stop()'>▼</button>
+                </div>
+              </div>
+
+            </div>
+            <!-- id=control -->
+            <div id='LEDMatrix' class="layer" align="center">
+              <button onclick="i2c_connect()">i2c 연결</button><br/>
+              <!-- <input type="color" value="#ff0000" name="color-picker"><br><br> -->
+              <!-- <input type='checkbox' id = "ch" value="1" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="2" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="3" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="4" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="5" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="6" name='ledmatrix'><br/>
+              <input type='checkbox' id = "ch" value="7" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="8" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="9" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="10" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="11" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="12" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="13" name='ledmatrix'><br/>
+              <input type='checkbox' id = "ch" value="14" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="15" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="16" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="17" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="18" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="19" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="20" name='ledmatrix'><br/>
+              <input type='checkbox' id = "ch" value="21" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="22" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="23" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="24" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="25" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="26" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="27" name='ledmatrix'><br/>
+              <input type='checkbox' id = "ch" value="28" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="29" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="30" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="31" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="32" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="33" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="34" name='ledmatrix'><br/>
+              <input type='checkbox' id = "ch" value="35" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="36" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="37" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="38" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="39" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="40" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="41" name='ledmatrix'><br/>
+              <input type='checkbox' id = "ch" value="42" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="43" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="44" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="45" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="46" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="47" name='ledmatrix'>
+              <input type='checkbox' id = "ch" value="48" name='ledmatrix'><br/> -->
+              <button onclick="turn_on_led()" style="width: 50px; height: 50px;">led 켜기</button>
+            </div>
+            <!-- id=LEDMatrix-->
+          </div>
+        </div>
+        <!-- id=split-pane__left   -->
+        
+        
+        <div class="split-pane__right">
+          <div class="editor editor--code">
+            <div class="sidebar editor__sidebar">
+              <div class="v-split">
+                <div class="v-split__top sidebar__buttons sidebar__buttons--top"></div>
+                <div class="v-split__bottom sidebar__buttons sidebar__buttons--bottom"></div>
+              </div>
+            </div>
+            <div class="canvas editor__canvas"></div>
+          </div>
+        </div>
+
+      </div> <!-- split-pane  -->
+
+
+      <!-- Status -->
+      <div class="status">
+        <div class="h-split">
+          <div class="h-split__left status__left"></div>
+          <div class="h-split__right status__right"></div>
+        </div>
+      </div>
+
+
+    </div> <!-- end of top div -->
+
+    <script src="js/libs/jquery-1.11.0.js"></script>
+    <script src="js/libs/jquery-ui-1.10.1.custom.js"></script>
+    <script src="js/libs/jquery.ui.touch-punch.min.js"></script>
+    <script src="js/libs/jquery.treeview.js"></script>
+    <script src="js/libs/jquery.sparkline.min.js"></script>
+    <script src="js/libs/splitster/splitster.js"></script>
+    <script src="js/libs/toastr/toastr.min.js"></script>
+    <script src="js/libs/guiders/guiders.js"></script>
+    <script src="js/libs/flot/jquery.flot.js"></script>
+    <script src="js/libs/flot/jquery.flot.time.js"></script>
+    <script src="js/libs/jcanvas/jcanvas.min.js"></script>
+    <script src="js/libs/jszip.min.js"></script>
+
+    <script src="js/libs/codemirror/codemirror.js"></script>
+    <script src="js/libs/codemirror/javascript.js"></script>
+    <script src="js/libs/codemirror/jshint.js"></script>
+    <script src="js/libs/codemirror/addon/dialog/dialog.js"></script>
+    <script src="js/libs/codemirror/addon/edit/closebrackets.js"></script>
+    <script src="js/libs/codemirror/addon/edit/trailingspace.js"></script>
+    <script src="js/libs/codemirror/addon/fold/brace-fold.js"></script>
+    <script src="js/libs/codemirror/addon/fold/comment-fold.js"></script>
+    <script src="js/libs/codemirror/addon/fold/foldcode.js"></script>
+    <script src="js/libs/codemirror/addon/fold/foldgutter.js"></script>
+    <script src="js/libs/codemirror/addon/fold/indent-fold.js"></script>
+    <script src="js/libs/codemirror/addon/hint/javascript-hint.js"></script>
+    <script src="js/libs/codemirror/addon/hint/show-hint.js"></script>
+    <script src="js/libs/codemirror/addon/lint/lint.js"></script>
+    <script src="js/libs/codemirror/addon/lint/javascript-lint.js"></script>
+    <script src="js/libs/codemirror/addon/scroll/annotatescrollbar.js"></script>
+    <script src="js/libs/codemirror/addon/search/jump-to-line.js"></script>
+    <script src="js/libs/codemirror/addon/search/matchesonscrollbar.js"></script>
+    <script src="js/libs/codemirror/addon/search/match-highlighter.js"></script>
+    <script src="js/libs/codemirror/addon/search/search.js"></script>
+    <script src="js/libs/codemirror/addon/search/searchcursor.js"></script>
+    <script src="js/libs/codemirror/addon/selection/active-line.js"></script>
+    <script src="js/libs/codemirror/addon/selection/mark-selection.js"></script>
+    <script src="js/libs/codemirror/addon/selection/selection-pointer.js"></script>
+    <script src="js/libs/codemirror/addon/tern/tern.js"></script>
+    <script src="js/libs/codemirror/keymap/emacs.js"></script>
+    <script src="js/libs/codemirror/keymap/sublime.js"></script>
+    <script src="js/libs/codemirror/keymap/vim.js"></script>
+
+    <script src="js/libs/acorn/acorn.js"></script>
+    <script src="js/libs/acorn/acorn_loose.js"></script>
+    <script src="js/libs/acorn/acorn_interpreter.js"></script>
+    <script src="js/libs/acorn/walk.js"></script>
+    <script src="js/libs/acorn/signal.js"></script>
+    <script src="js/libs/acorn/tern.js"></script>
+    <script src="js/libs/acorn/def.js"></script>
+    <script src="js/libs/acorn/comment.js"></script>
+    <script src="js/libs/acorn/infer.js"></script>
+    <script src="js/libs/acorn/doc_comment.js"></script>
+
+    <script src="EspruinoTools/espruino.js"></script>
+    <!-- load console here, so we get any messages while loading -->
+    <script src="js/core/settingsConsole.js"></script>
+
+    <script src="EspruinoTools/core/utils.js"></script>
+    <script src="EspruinoTools/core/config.js"></script>
+    <script src="js/core/notifications.js"></script>
+    <script src="js/core/status.js"></script>
+    <script src="js/core/app.js"></script>
+    <script src="js/core/file.js"></script>
+    <script src="js/core/code.js"></script>
+
+    <script src="EspruinoTools/core/serial.js"></script>
+    <script src="EspruinoTools/core/serial_chrome_serial.js"></script>
+    <script src="EspruinoTools/core/serial_chrome_socket.js"></script>
+    <script src="EspruinoTools/core/serial_node_serial.js"></script> <!-- Electron / nw.js -->
+    <script src="EspruinoTools/core/serial_web_audio.js"></script>
+    <script src="EspruinoTools/core/serial_web_bluetooth.js"></script>
+    <script src="EspruinoTools/core/serial_websocket_relay.js"></script>
+    <script src="EspruinoTools/core/serial_websocket_local.js"></script>
+    <script src="EspruinoTools/core/serial_frame.js"></script>
+    <!-- SERIAL_INTERFACES -->
+
+    <script src="EspruinoTools/core/terminal.js"></script>
+    <script src="EspruinoTools/core/codeWriter.js"></script>
+    <script src="EspruinoTools/core/modules.js"></script>
+    <script src="EspruinoTools/core/env.js"></script>
+    <script src="EspruinoTools/core/flasher.js"></script>
+    <script src="js/libs/secure-dfu.js"></script>
+
+    <script src="js/core/editorBlockly.js"></script>
+    <script src="js/core/editorJavaScript.js"></script>
+    <script src="js/core/send.js"></script>
+
+
+    <!-- Popup Windows -->
+    <script src="js/core/menuPortSelector.js"></script>
+    <script src="js/core/menuSettings.js"></script>
+    <script src="js/core/menuFlasher.js"></script>
+    <!-- Special pages in Settings Window -->
+    <script src="js/core/settingsAbout.js"></script>
+    <script src="js/core/settingsFlasher.js"></script>
+
+    <!-- Non-vital Plugins -->
+    <script src="EspruinoTools/plugins/boardJSON.js"></script>
+    <script src="EspruinoTools/plugins/versionChecker.js"></script>
+    <script src="EspruinoTools/plugins/compiler.js"></script>
+    <script src="EspruinoTools/plugins/assembler.js"></script>
+    <script src="EspruinoTools/plugins/getGitHub.js"></script>
+    <script src="EspruinoTools/libs/utf8.js"></script> <!-- needed for unicode -->
+    <script src="EspruinoTools/plugins/unicode.js"></script>
+
+    <script src="EspruinoTools/libs/esprima/esprima.js"></script> <!-- needed for minify -->
+    <script src="EspruinoTools/libs/esprima/esmangle.js"></script> <!-- needed for minify -->
+    <script src="EspruinoTools/libs/esprima/escodegen.js"></script> <!-- needed for minify -->
+    <script src="EspruinoTools/plugins/minify.js"></script>
+
+    <script src="EspruinoTools/plugins/saveOnSend.js"></script> <!-- This should come after minify -->
+    <script src="EspruinoTools/plugins/setTime.js"></script> <!-- This should come after save on send -->
+    <script src="EspruinoTools/plugins/pretokenise.js"></script>
+
+    <script src="js/plugins/tutorial.js"></script>
+    <script src="js/plugins/webcam.js"></script>
+    <script src="js/plugins/fontSize.js"></script>
+    <script src="js/plugins/uiMode.js"></script>
+    <script src="js/plugins/urlHandler.js"></script>
+    <!-- js/plugins/fileReload.js BROKEN -->
+    <script src="js/plugins/codeLink.js"></script>
+    <script src="js/plugins/project.js"></script>
+    <script src="js/plugins/testing.js"></script>
+    <script src="js/plugins/notification_sound.js"></script>
+    <script src="js/plugins/tern.js"></script> <!-- smart autocomplete -->
+    <script src="js/plugins/debugger.js"></script>
+    <script src="js/plugins/tour.js"></script>
+    <script src="js/plugins/settingsProfile.js"></script>
+    <script src="js/plugins/helpLinks.js"></script>
+    <script src="js/plugins/arrows.js"></script>
+    <script src="js/plugins/offline.js"></script>
+    <!-- js/plugins/_examplePlugin.js -->
+
+    <script>
+      (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+          m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+      ga('create', 'UA-46537227-2', 'auto');
+      ga('send', 'pageview');
+
+      // register service worker on known origins
+      if (window.location.origin == "https://www.espruino.com" ||
+        window.location.origin == "https://espruino.github.io") {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('serviceworker.js').then(function (reg) {
+            if (reg.installing) {
+              console.log('serviceworker> installing');
+            } else if (reg.waiting) {
+              console.log('serviceworker> installed');
+            } else if (reg.active) {
+              console.log('serviceworker> active');
+            }
+          }).catch(function (error) {
+            console.log('serviceworker> registration failed with ' + error);
+          });
+        }
+      }
+    </script>
+
+
+    <script type="text/javascript">
+
+      var StartSensorId;
+      var left_width;
+      var right_width
+      var canvas = document.getElementById('ir_graph');
+      var ctx = canvas.getContext('2d');
+
+      //$('#sidebar').hide();
+
+      function displaySensorData(sensor_data) {
+        //var sensor_data = Espruino.Core.Terminal.getTerminalLine(1);
+        //var s_data = String(sensor_data)
+        if (String(sensor_data).startsWith('[')) {
+          $("#ir_sensor").text(sensor_data);
+          sensor_data = sensor_data.replace('[', '');
+          sensor_data = sensor_data.replace(']', '');
+          var sensor_data_list = sensor_data.split(',');
+
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.beginPath();
+          ctx.rect(20, 100, 40, -Number(sensor_data_list[0]) / 10);
+          ctx.rect(80, 100, 40, -Number(sensor_data_list[1]) / 10);
+          ctx.rect(140, 100, 40, -Number(sensor_data_list[2]) / 10);
+          ctx.rect(200, 100, 40, -Number(sensor_data_list[3]) / 10);
+          ctx.rect(260, 100, 40, -Number(sensor_data_list[4]) / 10);
+          ctx.fillStyle = '#6666FF';
+          ctx.fill();
+          ctx.closePath();
+        }
+      }
+
+      function Control() {
+
+        if ($('#control').css('display') == 'none') {
+          //$('#sidebar').hide();
+          $('#console').hide();
+          $('#control').show();
+
+
+          left_width = $('.split-pane__left').css('width');
+          right_width = $('.split-pane__right').css('width');
+
+          $('.split-pane__left').css('width', '100%');
+          $('.split-pane__right').css('width', '0%');
+
+          //StartSensorId = setInterval(displaySensorData, 100);
+
+        }
+        else {
+          //$('#sidebar').show();
+          $('#control').hide();
+          $('#console').show();
+          $('.split-pane__left').css('width', left_width);
+          $('.split-pane__right').css('width', right_width);
+          //clearInterval(StartSensorId);
+        }
+      }
+      function LEDMatrix() {
+        var _ledmatrix_ = $("<div>");
+        _ledmatrix_.attr('id', 'ledmatrix');
+        if ($('#LEDMatrix').css('display') == 'none') {
+          //$('#sidebar').hide();
+          $('#console').hide();
+          $('#LEDMatrix').show();
+          _ledmatrix_.append($('<input/>', {type : 'color', value : '#ff0000', id : 'colorInput'}));
+          _ledmatrix_.append($('<br/>'));
+          $('#colorInput').ready(function() {
+            var color = $('#colorInput').val();
+            console.log(color)
+            for(var i = 0 ; i <= 48 ; i++) {
+                _ledmatrix_.append($('<input/>', {id : `cb${i}`, type : 'checkbox', name : 'ledmatrix', value : i, style : `width : 30px; height : 30px; display : none;`}))
+                _ledmatrix_.append($('<label/>', {for : `cb${i}`, style : `display: inline-block; width: 30px; height: 30px; border: 2px solid black ; cursor: pointer; margin: 5px;}`}));
+                //$(`#cb${i}:checked + label`).css('background-color') = hexColor;
+                if((i+1) % 7 == 0) {
+                  _ledmatrix_.append($('<br/>'));
+                }
+            }
+            $('#LEDMatrix').append(_ledmatrix_);
+          left_width = $('.split-pane__left').css('width');
+          right_width = $('.split-pane__right').css('width');
+
+          $('.split-pane__left').css('width', '100%');
+          $('.split-pane__right').css('width', '0%');
+
+          })
+         
+          //StartSensorId = setInterval(displaySensorData, 100);
+
+        }
+        else {
+          //$('#sidebar').show();
+          
+          $('#LEDMatrix').hide();
+          $('#ledmatrix').remove();
+          $('#console').show();
+          $('.split-pane__left').css('width', left_width);
+          $('.split-pane__right').css('width', right_width);
+          //clearInterval(StartSensorId);
+        }
+      }
+      function StartSensor() {
+        // if not connected, then should return
+
+        Espruino.Core.Terminal.typeCharacters('clearInterval(ir_adc_loop)\n')
+
+        var StartSensor_init = 'var i2c=new I2C();i2c.setup({scl:D27,sda:D26,bitrate:100000});var ir_adc=[0,0,0,0,0];var ir_adc_loop=setInterval(function(){i2c.writeTo(0x01,[1,10]);i2c.writeTo(0x01,[14]);var ir_i2c=i2c.readFrom(0x01,10);ir_adc=[((ir_i2c[0]*256)+ir_i2c[1]),((ir_i2c[2]*256)+ir_i2c[3]),((ir_i2c[4]*256)+ir_i2c[5]),((ir_i2c[6]*256)+ir_i2c[7]),((ir_i2c[8]*256)+ir_i2c[9])];console.log("s0:",ir_adc);},500);var LEFT_MOTOR=0,RIGHT_MOTOR=1,CLOCKWISE=0,COUNTER_CLOCKWISE=1,FORWARD=0,BACKWARD=1,LEFT=2,RIGHT=3,DIST_TO_ANGLE=33.645,ROBOT_ANGLE_TO_WHEEL_ANGLE=3;function robot_turn2(o,_,t){o==LEFT&&o==RIGHT&&i2c.writeTo(1,[2,4,o,_,t*ROBOT_ANGLE_TO_WHEEL_ANGLE>>8,t*ROBOT_ANGLE_TO_WHEEL_ANGLE&255,4+o+_+(t*ROBOT_ANGLE_TO_WHEEL_ANGLE>>8)+(t*ROBOT_ANGLE_TO_WHEEL_ANGLE&255)&255])};function robot_move_angle_no_time(dir,vel,angle){i2c.writeTo(0x01,[0x02,4,dir,vel,angle>>8,angle&0x00FF,(4+dir+vel+(angle>>8)+(angle&0x00FF))&0xFF])};function robot_stop(){i2c.writeTo(0x01,[0x02,5,(5)&0xFF])}\n';
+        Espruino.Core.Terminal.typeCharacters(StartSensor_init);
+
+      }
+      function EndSensor() {
+        Espruino.Core.Terminal.typeCharacters('clearInterval(ir_adc_loop)\n')
+      }
+      function robot_stop() {
+        Espruino.Core.Terminal.typeCharacters('cancel_all_move()\n')
+      }
+
+      function robot_wait() {
+        Espruino.Core.Terminal.typeCharacters('move_wait()\n')
+      }
+
+      function robot_resume() {
+        Espruino.Core.Terminal.typeCharacters('move_resume()\n')
+      }
+      function robot_alarm() {
+        Espruino.Core.Terminal.typeCharacters('analogWrite(D19, 0.5, {freq: 600});\n')
+      }
+      function robot_alarm_stop() {
+        Espruino.Core.Terminal.typeCharacters('analogWrite(D19, 0);\n')
+      }
+
+      function displayClock(txt) {
+        var clock = document.getElementById('clock');
+
+        //var txt = Espruino.Core.Terminal.getTerminalLine(1);
+        console.log(Math.round(Number((txt.split('='))[1])));
+        if (isNaN(Math.round(Number((txt.split('='))[1]))) == true) {
+          clock.innerHTML = 0;
+        }
+        else {
+          clock.innerHTML = Math.round(Number((txt.split('='))[1]));
+        }
+        //var ctime = Math.round(Number(txt));
+        //if (isNaN(ctime) == true) {
+        //  clock.innerHTML = 0;
+        //}
+        //else {
+        //  clock.innerHTML = txt;
+        //}
+
+      }
+
+      var clock_tid = 0;
+      function clock_start() {
+        if (clock_tid != 0) return;
+        clock_tid = setInterval(function () {
+          Espruino.Core.Terminal.typeCharacters('getTime()\n');
+          //var txt = (Espruino.Core.Terminal.getTerminalLine(3));
+          //setTimeout(displayClock, 200)
+        }, 1000)
+        console.log('clock_tid is : ' + clock_tid);
+      }
+      function clock_end() {
+        var clock = document.getElementById('clock');
+        clock.innerHTML = 0;
+        clearInterval(clock_tid);
+        clock_tid = 0;
+      }
+
+      rid = 0;
+      function newDataFromRobot(rdata) {
+        var sensor_data = Espruino.Core.Terminal.getTerminalLine(1);
+        //var s_data = String(sensor_data)
+        if (String(sensor_data).startsWith('s0:')) {
+          displaySensorData(sensor_data.substring(4));
+        }
+        else if (String(sensor_data).startsWith('=')) {
+          displayClock(sensor_data);
+        }
+        else {
+          // log message
+        }
+
+        //var clock = document.getElementById('clock');
+        //clock.innerHTML = "rdata" + rdata; //rid++;
+        //clock.innerHTML = "rdata" + Espruino.Core.Terminal.getTerminalLine(1);
+
+      }
+
+    </script>
+    <script type="text/javascript">
+
+      var myInterpreter = null;
+      var runner;
+
+      function initApi(interpreter, scope) {
+        // Add an API function for the alert() block, generated for "text_print" blocks.
+        var wrapper = function (text) {
+          text = text ? text.toString() : '';
+          outputArea.value = outputArea.value + '\n' + text;
+        };
+        interpreter.setProperty(scope, 'alert',
+          interpreter.createNativeFunction(wrapper));
+
+        // Add an API function for the prompt() block.
+        var wrapper = function (text) {
+          text = text ? text.toString() : '';
+          return interpreter.createPrimitive(prompt(text));
+        };
+        interpreter.setProperty(scope, 'prompt',
+          interpreter.createNativeFunction(wrapper));
+
+        // Add an API for the wait block.  See wait_block.js
+        initInterpreterWaitForSeconds(interpreter, scope);
+
+        // Add an API function for highlighting blocks.
+        var wrapper = function (id) {
+          id = id ? id.toString() : '';
+          return interpreter.createPrimitive(highlightBlock(id));
+        };
+        interpreter.setProperty(scope, 'highlightBlock',
+          interpreter.createNativeFunction(wrapper));
+      }
+
+      var highlightPause = false;
+      var latestCode = '';
+      function generateCodeAndLoadIntoInterpreter() {
+        // Generate JavaScript code and parse it.
+        Blockly.JavaScript.STATEMENT_PREFIX = 'highlightBlock(%1);\n';
+        Blockly.JavaScript.addReservedWords('highlightBlock');
+        latestCode = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+
+        resetStepUi(true);
+      }
+
+      function resetInterpreter() {
+        myInterpreter = null;
+        if (runner) {
+          clearTimeout(runner);
+          runner = null;
+        }
+      }
+
+      function runCode() {
+        if (!myInterpreter) {
+          // First statement of this code.
+          // Clear the program output.
+
+          // And then show generated code in an alert.
+          // In a timeout to allow the outputArea.value to reset first.
+          setTimeout(function () {
+            alert('Ready to execute the following code\n' +
+              '===================================\n' +
+              latestCode);
+
+            // Begin execution
+            highlightPause = false;
+            myInterpreter = new Interpreter(latestCode, initApi);
+            runner = function () {
+              if (myInterpreter) {
+                var hasMore = myInterpreter.run();
+                if (hasMore) {
+                  // Execution is currently blocked by some async call.
+                  // Try again later.
+                  setTimeout(runner, 10);
+                } else {
+                  // Program is complete.
+                  outputArea.value += '\n\n<< Program complete >>';
+                  resetInterpreter();
+                  resetStepUi(false);
+                }
+              }
+            };
+            runner();
+          }, 1);
+          return;
+        }
+      }
+    </script>
+
+    <script type="text/javascript">
+      function go() {
+        Espruino.Core.Terminal.typeCharacters('robot_move_angle_no_time(0,0,0);\n');
+        $('#speed').text('1');
+      }
+      function back() {
+        Espruino.Core.Terminal.typeCharacters('robot_move_angle_no_time(1,0,0);\n');
+        $('#speed').text('1');
+      }
+      function turnL() {
+        Espruino.Core.Terminal.typeCharacters('robot_move_angle_no_time(2,0,0);\n');
+        $('#speed').text('0.5');
+      }
+      function turnR() {
+        Espruino.Core.Terminal.typeCharacters('robot_move_angle_no_time(3,0,0);\n');
+        $('#speed').text('0.5');
+      }
+      function stop() {
+        Espruino.Core.Terminal.typeCharacters('robot_stop();\n');
+        $('#speed').text('0');
+      }
+    </script>
+    <!-- 20200328 추가부분 -->
+
+    <script>
+      function i2c_connect() {
+        Espruino.Core.Terminal.typeCharacters(`var i2c = new I2C();\ni2c.setup({scl: D27, sda: D26, bitrate: 400000});\n`);
+      }
+      function hexToRgb( hexType ){ 
+
+        var hex = hexType.replace( "#", "" ); 
+        var value = hex.match( /[a-f\d]/gi ); 
+
+
+        // 헥사값이 세자리일 경우, 여섯자리로. 
+        if ( value.length == 3 ) hex = value[0] + value[0] + value[1] + value[1] + value[2] + value[2]; 
+
+
+        value = hex.match( /[a-f\d]{2}/gi ); 
+
+        var r = parseInt( value[0], 16 ); 
+        var g = parseInt( value[1], 16 ); 
+        var b = parseInt( value[2], 16 ); 
+
+        return {r,g,b}
+      }
+      function turn_on_led() {
+        var check_count = document.getElementsByName("ledmatrix").length;
+        let hexColor = (document.getElementsByName('color-picker'))[0].value;
+        let color = hexToRgb(hexColor);
+        $('input[type="checkbox"]:checked').css('border', `3px solid ${hexColor}`);
+        let dot = -1;
+        for(var i = 0 ; i < check_count; i++) {
+          if(document.getElementsByName("ledmatrix")[i].checked == true) {
+            dot = document.getElementsByName("ledmatrix")[i].value;
+            Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 2, ${dot}, ${color.r}, ${color.g}, ${color.b}, (2 + ${dot} + ${color.r} + ${color.g} +  ${color.b}) & 0xFF]);\n`)
+          }
+        }
+      }
+    </script>
+
+
+
+</body>
+
+</html>
