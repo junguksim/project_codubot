@@ -499,7 +499,9 @@
           //$('#sidebar').hide();
           $('#console').hide();
           $('#LEDMatrix').show();
-          _ledmatrix_.append($('<input/>', {type : 'color', value : '#ff0000', id : 'colorInput'}));
+          _ledmatrix_.append($('<input/>', {type : 'color', name : 'color-picker', value : '#ff0000', id : 'colorInput'}));
+          _ledmatrix_.append($('<br/>'));
+          _ledmatrix_.append($('<input/>', {type : 'button', onclick : 'setColor()', value : '색설정하기' ,id : 'setColorBtn'}));
           _ledmatrix_.append($('<br/>'));
           $('#colorInput').ready(function() {
             var color = $('#colorInput').val();
@@ -772,6 +774,11 @@
             Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 2, ${dot}, ${color.r}, ${color.g}, ${color.b}, (2 + ${dot} + ${color.r} + ${color.g} +  ${color.b}) & 0xFF]);\n`)
           }
         }
+      }
+      function setColor() {
+        let hexColor = (document.getElementsByName('color-picker'))[0].value;
+        let color = hexToRgb(hexColor);
+        $('input[type="checkbox"]:checked + label').css('background-color', `${hexColor}`);
       }
     </script>
 
