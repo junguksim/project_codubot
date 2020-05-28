@@ -5,6 +5,8 @@ var move_job_number = 0;
 var curr_callback_id;
 var move_curr_job;
 var move_start_time;
+var checked = 'checked'
+var unchecked = 'unchecked'
 var i2c = new I2C(); i2c.setup({ scl: D27, sda: D26, bitrate: 100000 }); var FORWARD = 0; var BACKWARD = 1; var LEFT = 2; var RIGHT = 3; 
 var LEFT_MOTOR = 0; var RIGHT_MOTOR = 1; var CLOCKWISE = 0; var COUNTER_CLOCKWISE = 1; var ir_adc = [0, 0, 0, 0, 0]; var DIST_TO_ANGLE = 33.645; var ROBOT_ANGLE_TO_WHEEL_ANGLE = 3;
 function next_move_check() {
@@ -81,37 +83,17 @@ function motor_stop(motor) { i2c.writeTo(0x01, [0x02, 3, motor, (3 + motor) & 0x
 function robot_turn_square(time, count) { for (var i = 0; i < count * 4; i++) { 
     robot_move_angle(0, 0, 0, time); robot_turn(2, 0, 90, 1) } }; var ir_adc_loop = setInterval(function () { i2c.writeTo(0x01, [1, 10]); i2c.writeTo(0x01, [14]); var ir_i2c = i2c.readFrom(0x01, 10); ir_adc = [((ir_i2c[0] * 256) + ir_i2c[1]), ((ir_i2c[2] * 256) + ir_i2c[3]), ((ir_i2c[4] * 256) + ir_i2c[5]), ((ir_i2c[6] * 256) + ir_i2c[7]), ((ir_i2c[8] * 256) + ir_i2c[9])] }, 10); function robot_move_till_fall() { setInterval(function () { print(ir_adc[2]); robot_move_angle(1, 0, 0); if (ir_adc[2] > 500) { robot_stop(); clearInterval() } }, 5) } function robot_move_cross(time) { robot_move_angle(0, 0, 0, time); robot_turn(2, 0, 0, time); robot_move_angle(0, 0, 0, time); robot_move_angle(1, 0, 0, time * 2); robot_move_angle(0, 0, 0, time); robot_turn(3, 0, 0, time); robot_move_angle(0, 0, 0, time); robot_move_angle(1, 0, 0, time * 2)
 };
-function line_trace() {
-    var ir_adc=[];
-    var ir_adc_loop=setInterval(function(){
-        i2c.writeTo(0x01,[1,10]);i2c.writeTo(0x01,[14]);
-        var ir_i2c=i2c.readFrom(0x01,10);
-        ir_adc=[((ir_i2c[0]*256)+ir_i2c[1]),((ir_i2c[2]*256)+ir_i2c[3]),((ir_i2c[4]*256)+ir_i2c[5]),((ir_i2c[6]*256)+ir_i2c[7]),((ir_i2c[8]*256)+ir_i2c[9])];
-        console.log('s0: ', ir_adc);
-        if(ir_adc.reduce((acc,cur)=>{return acc+cur}) / 5 > 500) {
-            robot_stop();
-            clearInterval(ir_adc_loop);
-            return 0;
-        }
-        if(ir_adc[2] > 150) {
-            robot_move_angle_no_time(1,-10,0);
-            if(ir_adc[3] > 200) {
-                robot_move_angle(1,0,0,0.2);
-                robot_turn(3,0,90,1);
-            }
-            if(ir_adc[1] > 200) {
-                robot_move_angle(1,0,0,0.2);
-                robot_turn(2,0,90,1);
-            }
-        }
-       
-        else {
-            robot_stop();
-        }
-    },200);
-}
 
-function led_matrix() {
+function led_matrix(checkedStr) {
+    checkedStr = checkedStr.toString();
+    print(checkedStr)
+    var checkedArr = checkedStr.split(',');
+    for(var i = 0 ; i < checkedArr.length ; i++) {
+        if(checkedArr[i] == 'unchecked') {
+            continue;
+        }
+        i2c.writeTo(0x07, [0x02, 2, i, 255, 0, 0, (2 + i + 255 + 0 +  0) & 0xFF]);
+    }
     
 }
 
