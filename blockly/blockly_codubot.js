@@ -236,3 +236,19 @@ Blockly.Blocks.line_trace = {
 Blockly.JavaScript.line_trace = function () {
     return `line_trace()\n;`
 }
+
+Blockly.Blocks['led_matrix'] = {
+    init : function() {
+        this.appendDummyInput()
+            .appendField('led_matrix : \n')
+            .appendField(new Blockly.FieldCheckbox(false), "ledmatrix")
+            .appendField(new Blockly.FieldCheckbox(false), "ledmatrix2")
+        this.setColour(270);
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+    }
+}
+
+Blockly.JavaScript.led_matrix = function () {
+    return `led_matrix()`;
+}

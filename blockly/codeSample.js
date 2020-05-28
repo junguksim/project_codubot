@@ -111,8 +111,13 @@ function line_trace() {
     },200);
 }
 
+function led_matrix() {
+    
+}
+
 // index
 
 function robot_move_angle_no_time(dir, vel, angle) { 
     i2c.writeTo(0x01, [0x02, 4, dir, vel, angle >> 8, angle & 0x00FF, (4 + dir + vel + (angle >> 8) + (angle & 0x00FF)) & 0xFF])
 }
+

@@ -186,58 +186,7 @@
 
             </div>
             <!-- id=control -->
-            <div id='LEDMatrix' class="layer" align="center">
-              <button onclick="i2c_connect()">i2c 연결</button><br/>
-              <!-- <input type="color" value="#ff0000" name="color-picker"><br><br> -->
-              <!-- <input type='checkbox' id = "ch" value="1" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="2" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="3" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="4" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="5" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="6" name='ledmatrix'><br/>
-              <input type='checkbox' id = "ch" value="7" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="8" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="9" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="10" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="11" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="12" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="13" name='ledmatrix'><br/>
-              <input type='checkbox' id = "ch" value="14" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="15" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="16" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="17" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="18" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="19" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="20" name='ledmatrix'><br/>
-              <input type='checkbox' id = "ch" value="21" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="22" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="23" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="24" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="25" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="26" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="27" name='ledmatrix'><br/>
-              <input type='checkbox' id = "ch" value="28" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="29" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="30" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="31" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="32" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="33" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="34" name='ledmatrix'><br/>
-              <input type='checkbox' id = "ch" value="35" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="36" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="37" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="38" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="39" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="40" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="41" name='ledmatrix'><br/>
-              <input type='checkbox' id = "ch" value="42" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="43" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="44" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="45" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="46" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="47" name='ledmatrix'>
-              <input type='checkbox' id = "ch" value="48" name='ledmatrix'><br/> -->
-              <button onclick="turn_on_led()" style="width: 50px; height: 50px;">led 켜기</button>
+            <div id='LEDMatrix' class="layer" >
             </div>
             <!-- id=LEDMatrix-->
           </div>
@@ -472,7 +421,7 @@
           //$('#sidebar').hide();
           $('#console').hide();
           $('#control').show();
-
+         
 
           left_width = $('.split-pane__left').css('width');
           right_width = $('.split-pane__right').css('width');
@@ -499,22 +448,24 @@
           //$('#sidebar').hide();
           $('#console').hide();
           $('#LEDMatrix').show();
-          _ledmatrix_.append($('<input/>', {type : 'color', name : 'color-picker', value : '#ff0000', id : 'colorInput'}));
+          Espruino.Core.Terminal.typeCharacters(`var i2c = new I2C();\ni2c.setup({scl: D27, sda: D26, bitrate: 400000});\n`);
+          _ledmatrix_.append($('<input/>', {type : 'button', onclick:'turn_on_led()', value : 'led 켜기', style : "width : 30px, height : 30px"}))
           _ledmatrix_.append($('<br/>'));
-          _ledmatrix_.append($('<input/>', {type : 'button', onclick : 'setColor()', value : '색설정하기' ,id : 'setColorBtn'}));
+          _ledmatrix_.append($('<input/>', {type:'color', name:'color-picker', value:'#ff0000', id:'colorInput', onchange: 'watchColorPicker()'}));
+          _ledmatrix_.append($('<br/>'));
+          _ledmatrix_.append($('<input/>', {type : 'button', onclick:'setBrightness()', value : '밝기 설정하기'}))
           _ledmatrix_.append($('<br/>'));
           $('#colorInput').ready(function() {
             var color = $('#colorInput').val();
-            console.log(color)
             for(var i = 0 ; i <= 48 ; i++) {
-                _ledmatrix_.append($('<input/>', {id : `cb${i}`, type : 'checkbox', name : 'ledmatrix', value : i, style : `width : 30px; height : 30px; display : none;`}))
-                _ledmatrix_.append($('<label/>', {for : `cb${i}`, style : `display: inline-block; width: 30px; height: 30px; border: 2px solid black ; cursor: pointer; margin: 5px;}`}));
-                //$(`#cb${i}:checked + label`).css('background-color') = hexColor;
+                _ledmatrix_.append($('<input/>', {id:`cb${i}`, type:'checkbox', name:'ledmatrix', value:i, style:`width : 30px; height : 30px; display : none;`}))
+                _ledmatrix_.append($('<label/>', {onclick:'setColor('+i+')', id:`cbl${i}`, for:`cb${i}`, style:`display: inline-block; width: 30px; height: 30px; border: 2px solid black ; cursor: pointer; margin: 5px;`}));
                 if((i+1) % 7 == 0) {
                   _ledmatrix_.append($('<br/>'));
                 }
-            }
-            $('#LEDMatrix').append(_ledmatrix_);
+          }
+          _ledmatrix_.css({"float" : "left", "margin-left" : "100px", "padding" : "50px"})
+          $('#LEDMatrix').append(_ledmatrix_);
           left_width = $('.split-pane__left').css('width');
           right_width = $('.split-pane__right').css('width');
 
@@ -762,23 +713,51 @@
 
         return {r,g,b}
       }
+      let matrixArr = new Array(49);
+      matrixArr.fill(-1);
       function turn_on_led() {
-        var check_count = document.getElementsByName("ledmatrix").length;
-        let hexColor = (document.getElementsByName('color-picker'))[0].value;
-        let color = hexToRgb(hexColor);
-        $('input[type="checkbox"]:checked').css('border', `3px solid ${hexColor}`);
-        let dot = -1;
-        for(var i = 0 ; i < check_count; i++) {
-          if(document.getElementsByName("ledmatrix")[i].checked == true) {
-            dot = document.getElementsByName("ledmatrix")[i].value;
-            Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 2, ${dot}, ${color.r}, ${color.g}, ${color.b}, (2 + ${dot} + ${color.r} + ${color.g} +  ${color.b}) & 0xFF]);\n`)
+        for(var i = 0 ; i < matrixArr.length; i++) {
+          let checked = $(`input:checkbox[id=cb${i}]`).is(":checked")
+          if(matrixArr[i] == -2) {
+            Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 2, ${i}, 0, 0, 0, (2 + ${i} + 0 + 0 + 0) & 0xFF]);\n`);
+            matrixArr[i] = -1;
+            continue;
           }
+          if(checked == false) {
+            continue;
+          }
+          Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 2, ${i}, ${matrixArr[i].r}, ${matrixArr[i].g}, ${matrixArr[i].b}, (2 + ${i} + ${matrixArr[i].r} + ${matrixArr[i].g} +  ${matrixArr[i].b}) & 0xFF]);\n`)
+          //Espruino.Core.Terminal.typeCharacters(`print_single_dot(${i},${matrixArr[i].r}, ${matrixArr[i].g}, ${matrixArr[i].b})\n`)
         }
       }
-      function setColor() {
-        let hexColor = (document.getElementsByName('color-picker'))[0].value;
+      
+      function setColor(el) {
+        let hexColor = pickedHexColor;
         let color = hexToRgb(hexColor);
-        $('input[type="checkbox"]:checked + label').css('background-color', `${hexColor}`);
+        let aa = "#cbl" + el;
+        if ( $(aa).data('led') != null ) {
+          $(aa).css('background-color', '#ffffff');
+          $(aa).data('led', null);
+          matrixArr[el] = -2;
+        }
+        else {
+          $(aa).css('background-color', `${hexColor}`);
+          $(aa).data('led', `${hexColor}`);
+          matrixArr[el] = color;
+        }
+        
+      }
+
+      var pickedHexColor = "#ff0000";
+      function watchColorPicker(event) {
+        pickedHexColor = (document.getElementsByName('color-picker'))[0].value;
+        console.log("new color : " + pickedHexColor);
+      }
+      function setBrightness() {
+        var brightness= prompt("밝기 값을 입력하세요.(1~10)", "10");
+        
+        Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 1,${brightness}, (1 + ${brightness}) & 0xFF]);\n`)
+
       }
     </script>
 
