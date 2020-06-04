@@ -103,3 +103,53 @@ function robot_move_angle_no_time(dir, vel, angle) {
     i2c.writeTo(0x01, [0x02, 4, dir, vel, angle >> 8, angle & 0x00FF, (4 + dir + vel + (angle >> 8) + (angle & 0x00FF)) & 0xFF])
 }
 
+
+
+//* dotmatrix
+
+var i2c = new I2C(); i2c.setup({ scl: D27, sda: D26, bitrate: 100000 });
+function set_brightness(brightness) {
+    i2c.writeTo(0x10, [0x02, 1, brightness, (1 + brightness) & 0xFF]);
+  }
+  
+  function print_single_dot(dot, red, green, blue) {
+    i2c.writeTo(0x10, [0x02, 2, dot, red, green, blue, (2 + dot + red + green + blue) & 0xFF]);
+  }
+  
+//   function print_single_line(line, rgb_array) {
+//     var sum_rgb_array = 0;
+//     for(var i = 0 ; i < 7 ; i++)
+//       sum_rgb_array = (sum_rgb_array + rgb_array[i].reduce((a, b)=>a+b)) & 0xFF;
+//     i2c.writeTo(0x10, [0x02, 3, line, rgb_array, (3 + line + sum_rgb_array) & 0xFF]);
+//   }
+  
+//   function save_single_dot(dot, red, green, blue) {
+//     i2c.writeTo(0x10, [0x02, 4, dot, red, green, blue, (4 + dot + red + green + blue) & 0xFF]);
+//   }
+  
+//   function save_single_line(line, rgb_array) {
+//     var sum_rgb_array = 0;
+//     for(var i = 0 ; i < 7 ; i++)
+//       sum_rgb_array = (sum_rgb_array + rgb_array[i].reduce((acc, cur) => acc + cur, 0)) & 0xFF;
+//     i2c.writeTo(0x10, [0x02, 5, line, rgb_array, (5 + line + sum_rgb_array) & 0xFF]);
+//   }
+  
+//   function updata_dot_matrix() {
+//     i2c.writeTo(0x10, [0x02, 6, (6) & 0xFF]);
+//   }
+  
+//   function print_every_line(rgb_array) {
+//     for(var i = 0 ; i < 7 ; i++)
+//       save_single_line(i, [rgb_array[(i * 7) + 0], rgb_array[(i * 7) + 1], rgb_array[(i * 7) + 2], rgb_array[(i * 7) + 3], rgb_array[(i * 7) + 4], rgb_array[(i * 7) + 5], rgb_array[(i * 7) + 6]]);
+//     updata_dot_matrix();
+//   }
+  
+//   function clear_dot_matrix() {
+//     print_every_line([[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
+//                       [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
+//                       [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
+//                       [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
+//                       [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
+//                       [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
+//                       [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]);
+//   }

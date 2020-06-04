@@ -79,16 +79,13 @@
       -ms-user-select: none;
       user-select: none;
     }
-
-    #savedLedSettings {
-      width: 60%;
-      height: 100%;
-      float: right;
-      border-left: 3px solid rgb(61, 61, 61);
+    input[type="checkbox"]:checked + label {
+        background-color: #666666;
     }
+    
   </style>
 
-
+    
 </head>
 
 <body>
@@ -121,7 +118,7 @@
             <div class="sidebar editor__sidebar" id="sidebar">
               <div class="v-split">
                 <div class="v-split__top sidebar__buttons sidebar__buttons--top"></div>
-                <div class="v-split__bottom sidebar__buttons sidebar__buttons--bottom">
+                <div class="v-split__bottom sidebar__buttons sidebar__buttons--bottom"> 
                   <button onclick='Control()'>Control Pannel</button>
                   <button onclick='StartSensor()'>Start Sensor</button>
                   <button onclick='EndSensor()'>End Sensor</button>
@@ -189,17 +186,14 @@
 
             </div>
             <!-- id=control -->
-            <div id='LEDMatrix' class="layer">
-              <div id="savedLedSettings">
-
-              </div>
+            <div id='LEDMatrix' class="layer" >
             </div>
             <!-- id=LEDMatrix-->
           </div>
         </div>
         <!-- id=split-pane__left   -->
-
-
+        
+        
         <div class="split-pane__right">
           <div class="editor editor--code">
             <div class="sidebar editor__sidebar">
@@ -427,7 +421,7 @@
           //$('#sidebar').hide();
           $('#console').hide();
           $('#control').show();
-
+         
 
           left_width = $('.split-pane__left').css('width');
           right_width = $('.split-pane__right').css('width');
@@ -455,47 +449,37 @@
           $('#console').hide();
           $('#LEDMatrix').show();
           Espruino.Core.Terminal.typeCharacters(`var i2c = new I2C();\ni2c.setup({scl: D27, sda: D26, bitrate: 400000});\n`);
-          _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'turn_on_led()', value: 'led 켜기', style: "width : 30px, height : 30px" }))
+          _ledmatrix_.append($('<input/>', {type : 'button', onclick:'turn_on_led()', value : 'led 켜기', style : "width : 30px, height : 30px"}))
           _ledmatrix_.append($('<br/>'));
-          _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'turn_off_all()', value: '모두 끄기', style: "width : 30px, height : 30px" }))
+          _ledmatrix_.append($('<input/>', {type:'color', name:'color-picker', value:'#ff0000', id:'colorInput', onchange: 'watchColorPicker()'}));
           _ledmatrix_.append($('<br/>'));
-          _ledmatrix_.append($('<input/>', { type: 'file', value: '#000000', id: 'fileInput', onchange: 'setColorFromFile()' }));
-          //_ledmatrix_.append($('<br/>'));
-          _ledmatrix_.append($('<canvas/>', { id: 'canvas1', width: 7, height: 7, style: 'border: 1px solid black; display:none' }));
-          //_ledmatrix_.append($('<canvas/>', {id:'canvas2', width:7, height:7, style: 'border: 1px solid black; display:none'}));
-          _ledmatrix_.append($('<img/>', { id: 'imgoutput', width: 7, height: 7, style: 'border: 1px solid black' }));
+          _ledmatrix_.append($('<input/>', {type : 'button', onclick:'setBrightness()', value : '밝기 설정하기'}))
           _ledmatrix_.append($('<br/>'));
-          _ledmatrix_.append($('<input/>', { type: 'color', name: 'color-picker', value: '#ff0000', id: 'colorInput', onchange: 'watchColorPicker()' }));
-          _ledmatrix_.append($('<br/>'));
-          _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'setBrightness()', value: '밝기 설정하기' }))
-          _ledmatrix_.append($('<br/>'));
-          $('#colorInput').ready(function () {
+          $('#colorInput').ready(function() {
             var color = $('#colorInput').val();
-            for (var i = 0; i <= 48; i++) {
-              _ledmatrix_.append($('<input/>', { id: `cb${i}`, type: 'checkbox', name: 'ledmatrix', value: i, style: `width : 30px; height : 30px; display : none;` }))
-              _ledmatrix_.append($('<label/>', { onclick: 'setColor(' + i + ')', id: `cbl${i}`, for: `cb${i}`, style: `display: inline-block; width: 30px; height: 30px; border: 2px solid black ; cursor: pointer; margin: 5px;` }));
-              if ((i + 1) % 7 == 0) {
-                _ledmatrix_.append($('<br/>'));
-              }
-            }
-            _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'save_led()', value: 'LED 세팅 저장하기' }))
-            _ledmatrix_.append($('<br/>'));
-            _ledmatrix_.css({ "float": "left", "margin-left": "100px", "padding": "50px" })
-            $('#LEDMatrix').append(_ledmatrix_);
-            left_width = $('.split-pane__left').css('width');
-            right_width = $('.split-pane__right').css('width');
+            for(var i = 0 ; i <= 48 ; i++) {
+                _ledmatrix_.append($('<input/>', {id:`cb${i}`, type:'checkbox', name:'ledmatrix', value:i, style:`width : 30px; height : 30px; display : none;`}))
+                _ledmatrix_.append($('<label/>', {onclick:'setColor('+i+')', id:`cbl${i}`, for:`cb${i}`, style:`display: inline-block; width: 30px; height: 30px; border: 2px solid black ; cursor: pointer; margin: 5px;`}));
+                if((i+1) % 7 == 0) {
+                  _ledmatrix_.append($('<br/>'));
+                }
+          }
+          _ledmatrix_.css({"float" : "left", "margin-left" : "100px", "padding" : "50px"})
+          $('#LEDMatrix').append(_ledmatrix_);
+          left_width = $('.split-pane__left').css('width');
+          right_width = $('.split-pane__right').css('width');
 
-            $('.split-pane__left').css('width', '100%');
-            $('.split-pane__right').css('width', '0%');
+          $('.split-pane__left').css('width', '100%');
+          $('.split-pane__right').css('width', '0%');
 
           })
-
+         
           //StartSensorId = setInterval(displaySensorData, 100);
 
         }
         else {
           //$('#sidebar').show();
-
+          
           $('#LEDMatrix').hide();
           $('#ledmatrix').remove();
           $('#console').show();
@@ -708,68 +692,50 @@
     <!-- 20200328 추가부분 -->
 
     <script>
-      let matrixArr = new Array(49);
-      matrixArr.fill(-1);
       function i2c_connect() {
         Espruino.Core.Terminal.typeCharacters(`var i2c = new I2C();\ni2c.setup({scl: D27, sda: D26, bitrate: 400000});\n`);
       }
-      function hexToRgb(hexType) {
+      function hexToRgb( hexType ){ 
 
-        var hex = hexType.replace("#", "");
-        var value = hex.match(/[a-f\d]/gi);
+        var hex = hexType.replace( "#", "" ); 
+        var value = hex.match( /[a-f\d]/gi ); 
 
 
         // 헥사값이 세자리일 경우, 여섯자리로. 
-        if (value.length == 3) hex = value[0] + value[0] + value[1] + value[1] + value[2] + value[2];
+        if ( value.length == 3 ) hex = value[0] + value[0] + value[1] + value[1] + value[2] + value[2]; 
 
 
-        value = hex.match(/[a-f\d]{2}/gi);
+        value = hex.match( /[a-f\d]{2}/gi ); 
 
-        var r = parseInt(value[0], 16);
-        var g = parseInt(value[1], 16);
-        var b = parseInt(value[2], 16);
+        var r = parseInt( value[0], 16 ); 
+        var g = parseInt( value[1], 16 ); 
+        var b = parseInt( value[2], 16 ); 
 
-        return { r, g, b }
+        return {r,g,b}
       }
-      function rgbToHex(r, g, b) {
-        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-      }
-      
+      let matrixArr = new Array(49);
+      matrixArr.fill(-1);
       function turn_on_led() {
-        for (var i = 0; i < matrixArr.length; i++) {
+        for(var i = 0 ; i < matrixArr.length; i++) {
           let checked = $(`input:checkbox[id=cb${i}]`).is(":checked")
-          console.log(i, checked);
-          if (matrixArr[i] == -2) {
+          if(matrixArr[i] == -2) {
             Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 2, ${i}, 0, 0, 0, (2 + ${i} + 0 + 0 + 0) & 0xFF]);\n`);
             matrixArr[i] = -1;
             continue;
           }
-          if (checked == false) {
+          if(checked == false) {
             continue;
           }
           Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 2, ${i}, ${matrixArr[i].r}, ${matrixArr[i].g}, ${matrixArr[i].b}, (2 + ${i} + ${matrixArr[i].r} + ${matrixArr[i].g} +  ${matrixArr[i].b}) & 0xFF]);\n`)
           //Espruino.Core.Terminal.typeCharacters(`print_single_dot(${i},${matrixArr[i].r}, ${matrixArr[i].g}, ${matrixArr[i].b})\n`)
         }
       }
-      function turn_off_all() {
-        for (var i = 0; i < matrixArr.length; i++) {
-          if (matrixArr[i] == -1) {
-            continue;
-          }
-          matrixArr[i] = -1;
-          let aa = "#cbl" + i;
-          let aai = "#cb" + i;
-          $(aai).prop('checked', false);
-          $(aa).css('background-color', '#ffffff');
-          $(aa).data('led', null);
-          Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 2, ${i}, 0, 0, 0, (2 + ${i} + 0 + 0 +  0) & 0xFF]);\n`)
-        }
-      }
+      
       function setColor(el) {
         let hexColor = pickedHexColor;
         let color = hexToRgb(hexColor);
         let aa = "#cbl" + el;
-        if ($(aa).data('led') != null) {
+        if ( $(aa).data('led') != null ) {
           $(aa).css('background-color', '#ffffff');
           $(aa).data('led', null);
           matrixArr[el] = -2;
@@ -779,204 +745,19 @@
           $(aa).data('led', `${hexColor}`);
           matrixArr[el] = color;
         }
-
+        
       }
 
       var pickedHexColor = "#ff0000";
       function watchColorPicker(event) {
-        console.log((document.getElementsByName('color-picker'))[0])
         pickedHexColor = (document.getElementsByName('color-picker'))[0].value;
         console.log("new color : " + pickedHexColor);
       }
       function setBrightness() {
-        var brightness = prompt("밝기 값을 입력하세요.(1~10)", "10");
-
+        var brightness= prompt("밝기 값을 입력하세요.(1~10)", "10");
+        
         Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 1,${brightness}, (1 + ${brightness}) & 0xFF]);\n`)
 
-      }
-
-      function setColorFromFile() {
-
-        //console.log("read file : ");
-
-        var filesToUpload = document.getElementById('fileInput').files;
-        var file = filesToUpload[0];
-        //console.log("read file : ", file);
-
-        // 문서내에 img 객체를 생성합니다
-        img = document.createElement("img");
-
-        // 파일을 읽을 수 있는 File Reader 를 생성합니다
-        var reader = new FileReader();
-
-        // 파일이 읽혀지면 아래 함수가 실행됩니다
-        reader.onerror = function (e) {
-          console.log("read file error : ", e);
-        }
-
-        reader.onload = function (e) {
-          //console.log("read file onload : ", e);
-
-          img.src = e.target.result;
-          //console.log("read file e 1:" + img.src);
-
-          // HTML5 canvas 객체를 생성합니다
-          var canvas = document.getElementById("canvas1");
-          //var canvas = document.createElement("canvas");
-          canvas.width = 7; canvas.height = 7;
-          var ctx = canvas.getContext("2d");
-          ctx.clearRect(0, 0, 7, 7);
-
-          // 캔버스에 업로드된 이미지를 그려줍니다
-          ctx.drawImage(img, 0, 0); //, 7, 7);
-
-          setTimeout(function () {
-            var width = 7;
-            var height = 7;
-            //canvas.width = width;
-            //canvas.height = height;
-
-            // canvas에 변경된 크기의 이미지를 다시 그려줍니다.
-            //var canvas = document.getElementById("canvas2");
-            //var ctx = canvas2.getContext("2d");
-            ctx.drawImage(img, 0, 0, width, height);
-
-            // canvas 에 있는 이미지를 img 태그로 넣어줍니다
-            var dataurl = canvas.toDataURL("image/png");
-            document.getElementById('imgoutput').width = 28;
-            document.getElementById('imgoutput').src = dataurl;
-
-            setTimeout(setLEDGrid, 500);
-          }, 500);
-        }
-
-        function setLEDGrid() {
-
-          var canvas = document.getElementById("canvas1");
-          var ctx = canvas.getContext("2d");
-
-          // 복제된 이미지에 대한 픽셀정보를 가져옴
-          var id = ctx.getImageData(0, 0, 7, 7);
-
-          // 픽셀순회
-          //var debug =  document.getElementById('debug');
-          //debug.innerHTML = "";
-          for (var i = 0; i < id.data.length; i += 4) {
-            let aai = "#cb" + i / 4;
-            let aa = "#cbl" + i / 4;
-            let color_value = "#" + id.data[i + 0].toString(16) + id.data[i + 1].toString(16) + id.data[i + 2].toString(16);
-            //debug.innerHTML += (i/4)+":"+id.data[i]+","+id.data[i+1]+","+id.data[i+2]+","+id.data[i+3]+ ",";
-            if (id.data[i + 0] + id.data[i + 1] + id.data[i + 2] == 765) {
-              $(aai).prop('checked', false);
-              $(aa).css('background-color', color_value)
-              continue;
-            }
-
-
-            $(aa).css('background-color', color_value)
-
-            $(aai).prop('checked', true);
-            matrixArr[i / 4] = hexToRgb(color_value)
-            //console.log(i/4, color_value);
-            //if ( (id.data[i]+id.data[i+1]+id.data[i+2]) > 128*3 ) {
-            //  id.data[i]=255;id.data[i+1]=255;id.data[i+2]=255;
-            //}
-            //else {
-            //  id.data[i]=0;id.data[i+1]=0;id.data[i+2]=0;
-            //}
-          }
-          //console.log("read file e 3: ");//, id.data.length/4);
-
-        }
-
-        reader.readAsDataURL(file);
-        //console.log("read file e 4: ");
-
-      }
-      let matrixArr_ = [];
-      let settingsCnt = 0;
-      function save_led() {
-
-        var ledmatrix__ = $("<div>");
-        ledmatrix__.attr({
-          'id': `ledmatrix${settingsCnt}`,
-          "onclick": `load_led(${settingsCnt})`
-        });
-        ledmatrix__.css({
-          "cursor": "pointer",
-          "width": "40%",
-          'border': '3px solid black',
-          "margin": "10px"
-        });
-        matrixArr_.push((new Array(49).fill(-1)));
-        for (var i = 0; i <= 48; i++) {
-          ledmatrix__.append($('<input/>', { id: `cb${i}_`, type: 'checkbox', onclick: "return false;", name: 'ledmatrix', value: i, style: `width : 30px; height : 30px; display : none;` }))
-          if (matrixArr[i] == -1) {
-            ledmatrix__.append($('<label/>', { id: `cbl${i}_`, for: `cb${i}_`, style: `display: inline-block; width: 15px; height: 15px; border: 2px solid black ; cursor: pointer; margin: 5px;` }));
-            if ((i + 1) % 7 == 0) {
-              ledmatrix__.append($('<br/>'));
-            }
-            continue;
-          }
-          matrixArr_[settingsCnt][i] = matrixArr[i];
-          let hexColor = rgbToHex(matrixArr[i].r, matrixArr[i].g, matrixArr[i].b);
-          ledmatrix__.append($('<label/>', { id: `cbl${i}_`, for: `cb${i}_`, style: `display: inline-block; width: 15px; height: 15px; border: 2px solid black ; cursor: pointer; margin: 5px; background-color:${hexColor}` }));
-          if ((i + 1) % 7 == 0) {
-            ledmatrix__.append($('<br/>'));
-          }
-        }
-
-        ledmatrix__.append($('<input/>', { id: "deleteSlotBtn", type: "button", name: "deleteSlotBtn", onclick: `delete_slot(${settingsCnt})`, value: "지우기" }));
-        ledmatrix__.append($('<br/>'));
-        ++settingsCnt;
-        // let table = $("<div/>");
-        // table.attr("class", "jb-table");
-        // table.css({
-        //   display: "table",
-        //   width: "100%"
-        // })
-        // let tableRow = $("<div/>");
-        // tableRow.attr("class", "jb-table-row");
-        // tableRow.css({
-        //   "display": "table-row"
-        // })
-        // let tableCell = $("<div/>");
-        // tableCell.attr("class", "jb-table-cell");
-        // tableCell.css({
-        //   display: "table-cell",
-        //   padding: "0px 20px",
-        //   height: "150px",
-        // })
-        // $("#savedLedSettings").append(table);
-        // if(settingsCnt % 2 == 0) {
-        //   $("#savedLedSettings").append(tableRow);  
-        // }
-        // tableCell.append(ledmatrix__);
-        // tableRow.append(tableCell)
-        $("#savedLedSettings").append(ledmatrix__)
-        ledmatrix__ = $("<div>");
-
-        turn_off_all();
-      }
-      function load_led(cnt) {
-        turn_off_all();
-        for (var i = 0; i <= 48; i++) {
-          if (matrixArr_[cnt][i] == -1) {
-            continue;
-          }
-          matrixArr[i] = matrixArr_[cnt][i];
-          let aa = "#cbl" + i;
-          let aai = "#cb" + i;
-          let hexColor = rgbToHex(matrixArr[i].r, matrixArr[i].g, matrixArr[i].b);
-          $(aa).css('background-color', `${hexColor}`);
-          $(aa).data('led', `${hexColor}`);
-          $(aai).prop("checked", true);
-        }
-      }
-      function delete_slot(cnt) {
-        matrixArr_.splice(cnt, 1);
-        $(`#ledmatrix${cnt}`).remove()
-        --settingsCnt;
       }
     </script>
 
