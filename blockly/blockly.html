@@ -7,20 +7,12 @@
     <script type="text/javascript" src="ru.js"></script>
     <script type="text/javascript" src="de.js"></script>
     <script type="text/javascript" src="javascript_compressed.js"></script>
-    <script type="text/javascript" src="blockly_espruino.js"></script>
-    <script type="text/javascript" src="blockly_menu.js"></script>
-    <script type="text/javascript" src="blockly_gfx.js"></script>
-    <script type="text/javascript" src="blockly_robot.js"></script>
-    <script type="text/javascript" src="blockly_amperka_motorshield.js"></script>
-    <script type="text/javascript" src="blockly_ble.js"></script>
-    <script type="text/javascript" src="blockly_nordic_thingy.js"></script>
-    <script type="text/javascript" src="blockly_smartibot.js"></script>
-    <script type="text/javascript" src="blockly_bangle.js"></script>
     <script type="text/javascript" src="blockly_codubot.js"></script>
     <script type="text/javascript" src="field_textarea.js"></script>
     <script type="text/javascript" src="../js/libs/imageconverter.js"></script>
     <script type="text/javascript" src="blockly_codubot_variables.js"></script>
     <script type="text/javascript" src="blockly_codubot_dotmatrix.js"></script>
+    <script type="text/javascript" src="blockly_espruino.js"></script>
     <style>
       html, body {
         background-color: #fff;
@@ -266,88 +258,19 @@
         <title name="VAR">item</title>
       </block>
     </category>
-    <!--<category name="Procedures">
-      <block type="procedures_defnoreturn"  >
-        <mutation></mutation>
-        <title name="NAME">do something</title>
-      </block>
-      <block type="procedures_defreturn" inline="false"  >
-        <mutation></mutation>
-        <title name="NAME">do something2</title>
-      </block>
-      <block type="procedures_ifreturn" inline="true"  >
-        <mutation value="1"></mutation>
-      </block>
-      TODO - need to auto-add calls here??
-    </category> -->
-    <category name="Espruino" disable_if="smartibot">
-      <block type="espruino_getTime"></block>
-      <block type="espruino_pin"></block>
-      <block type="espruino_watch">
-        <value name="PIN"><block type="espruino_pin"><title name="PIN">BTN1</title></block></value>
-      </block>
-      <block type="espruino_digitalWrite">
-        <value name="PIN"><block type="espruino_pin"><title name="PIN">LED1</title></block></value>
-      </block>
-      <block type="espruino_digitalPulse">
-        <value name="PIN"><block type="espruino_pin"><title name="PIN">LED1</title></block></value>
-        <value name="VAL"><block type="logic_boolean"><title name="BOOL">TRUE</title></block></value>
-        <value name="TIME"><block type="math_number"><title name="NUM">100</title></block></value>
-      </block>
-      <block type="espruino_digitalRead">
-        <value name="PIN"><block type="espruino_pin"><title name="PIN">BTN1</title></block></value>
-      </block>
-      <block type="espruino_analogWrite">
-        <value name="PIN"><block type="espruino_pin"><title name="PIN">A1</title></block></value>
-      </block>
-      <block type="espruino_analogRead">
-        <value name="PIN"><block type="espruino_pin"><title name="PIN">A0</title></block></value>
-      </block>
-      <block type="espruino_pinMode">
-        <value name="PIN"><block type="espruino_pin"><title name="PIN">D0</title></block></value>
-      </block>
-      <block type="espruino_code">
-      </block>
-      <block type="espruino_jsexpression">
-      </block>
-    </category>
-    <category name="Functions" custom="PROCEDURE"></category>
     <category name="CoduBot">
-      <block type='coduBot_init'></block>
-      <block type='robot_move_angle'>
-        <value name="dir"></value>
-        <value name="vel"></value>
-        <value name="angle"></value>
-      </block>
-      <block type='robot_turn'>
-        <value name="dir"></value>
-        <value name="vel"></value>
-        <value name="angle"></value>
-        <value name="time"></value>
+      <block type='codubot_ready'></block>
+      <block type='set_velocity'>
+        <value name="velocity"></value>
       </block>
       <block type='robot_move_dist'>
-        <value name="dir"></value>
-        <value name="vel"></value>
         <value name="dist_cm"></value>
       </block>
-      <block type='robot_stop'></block>
-      <block type='motor_move'>
-        <value name="motor"></value>
-        <value name="vel"></value>
+      <block type='robot_turn'>
         <value name="angle"></value>
       </block>
-      <block type='motor_stop'>
-        <value name="motor"></value>
-      </block>
-      <block type='robot_turn_square'>
-        <value name="time"></value>
-        <value name="count"></value>
-      </block>
-      <block type='robot_move_till_fall'></block>
-      <block type='robot_move_cross'>
-        <value name="time"></value>
-      </block>
-      <block type='line_trace'></block>
+      <block type='robot_stop'></block>
+      <block type='ir_sensor'></block>
     </category>
     <category name="CoduBot_Variables">
       <block type="RIGHT_MOTOR"></block>
@@ -369,10 +292,7 @@
 
     <!-- Blockly initial code -->
 <xml id="blocklyInitial" style="display: none">
-  <block type="coduBot_init" inline="true"></block>
-</xml>
-<xml id="blocklyInitial_smartibot" style="display: none">
-
+  <block type="codubot_ready"></block>
 </xml>
   </body>
 </html>
