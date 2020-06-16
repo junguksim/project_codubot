@@ -740,14 +740,14 @@
           let checked = $(`input:checkbox[id=cb${i}]`).is(":checked")
           console.log(i, checked);
           if (matrixArr[i] == -2) {
-            Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 2, ${i}, 0, 0, 0, (2 + ${i} + 0 + 0 + 0) & 0xFF]);\n`);
+            Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x10, [0x02, 2, ${i}, 0, 0, 0, (2 + ${i} + 0 + 0 + 0) & 0xFF]);\n`);
             matrixArr[i] = -1;
             continue;
           }
           if (checked == false) {
             continue;
           }
-          Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 2, ${i}, ${matrixArr[i].r}, ${matrixArr[i].g}, ${matrixArr[i].b}, (2 + ${i} + ${matrixArr[i].r} + ${matrixArr[i].g} +  ${matrixArr[i].b}) & 0xFF]);\n`)
+          Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x10, [0x02, 2, ${i}, ${matrixArr[i].r}, ${matrixArr[i].g}, ${matrixArr[i].b}, (2 + ${i} + ${matrixArr[i].r} + ${matrixArr[i].g} +  ${matrixArr[i].b}) & 0xFF]);\n`)
           //Espruino.Core.Terminal.typeCharacters(`print_single_dot(${i},${matrixArr[i].r}, ${matrixArr[i].g}, ${matrixArr[i].b})\n`)
         }
       }
@@ -762,7 +762,7 @@
           $(aai).prop('checked', false);
           $(aa).css('background-color', '#ffffff');
           $(aa).data('led', null);
-          Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 2, ${i}, 0, 0, 0, (2 + ${i} + 0 + 0 +  0) & 0xFF]);\n`)
+          Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x10, [0x02, 2, ${i}, 0, 0, 0, (2 + ${i} + 0 + 0 +  0) & 0xFF]);\n`)
         }
       }
       function setColor(el) {
@@ -791,7 +791,7 @@
       function setBrightness() {
         var brightness = prompt("밝기 값을 입력하세요.(1~10)", "10");
 
-        Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 1,${brightness}, (1 + ${brightness}) & 0xFF]);\n`)
+        Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x10, [0x02, 1,${brightness}, (1 + ${brightness}) & 0xFF]);\n`)
 
       }
 

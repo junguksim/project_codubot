@@ -109,11 +109,11 @@ function robot_move_angle_no_time(dir, vel, angle) {
 
 var i2c = new I2C(); i2c.setup({ scl: D27, sda: D26, bitrate: 400000 });
 function set_brightness(brightness) {
-    i2c.writeTo(0x07, [0x02, 1, brightness, (1 + brightness) & 0xFF]);
+    i2c.writeTo(0x10, [0x02, 1, brightness, (1 + brightness) & 0xFF]);
   }
   
   function print_single_dot(dot, red, green, blue) {
-    i2c.writeTo(0x07, [0x02, 2, dot, red, green, blue, (2 + dot + red + green + blue) & 0xFF]);
+    i2c.writeTo(0x10, [0x02, 2, dot, red, green, blue, (2 + dot + red + green + blue) & 0xFF]);
   }
   
   function print_single_line(rgb_array) {
@@ -124,7 +124,7 @@ function set_brightness(brightness) {
     for(var i = 0 ; i < 7 ; i++) {
         sum_rgb_array = (sum_rgb_array + rgb_array[i].reduce((a, b)=>a+b)) & 0xFF;
     }
-    i2c.writeTo(0x07, [0x02, 3, line, rgb_array, (3 + line + sum_rgb_array) & 0xFF]);
+    i2c.writeTo(0x10, [0x02, 3, line, rgb_array, (3 + line + sum_rgb_array) & 0xFF]);
   }
   
 //   function save_single_dot(dot, red, green, blue) {

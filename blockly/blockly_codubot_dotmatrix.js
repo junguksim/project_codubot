@@ -10,7 +10,7 @@ Blockly.Blocks.dot_matrix_ready = {
 }
 
 Blockly.JavaScript.dot_matrix_ready = function () {
- return "var i2c=new I2C();i2c.setup({scl:D27,sda:D26,bitrate:400000});function set_brightness(brightness){i2c.writeTo(0x07,[0x02,1,brightness,(1+brightness)&0xFF])}function print_single_dot(dot,red,green,blue){i2c.writeTo(0x07,[0x02,2,dot,red,green,blue,(2+dot+red+green+blue)&0xFF])}function print_single_line(rgb_array){console.log('===========rgb_array================')console.log(rgb_array);var line=rgb_array[0];var sum_rgb_array=0;for(var i=0;i<7;i++){sum_rgb_array=(sum_rgb_array+rgb_array[i].reduce((a,b)=>a+b))&0xFF}i2c.writeTo(0x07,[0x02,3,line,rgb_array,(3+line+sum_rgb_array)&0xFF])}\n"
+ return "var i2c=new I2C();i2c.setup({scl:D27,sda:D26,bitrate:400000});function set_brightness(brightness){i2c.writeTo(0x10,[0x02,1,brightness,(1+brightness)&0xFF])}function print_single_dot(dot,red,green,blue){i2c.writeTo(0x10,[0x02,2,dot,red,green,blue,(2+dot+red+green+blue)&0xFF])}function print_single_line(rgb_array){console.log('===========rgbStr================')console.log(rgb_array);var line=rgb_array[0];var sum_rgb_array=0;for(var i=0;i<7;i++){sum_rgb_array=(sum_rgb_array+rgb_array[i].reduce((a,b)=>a+b))&0xFF}i2c.writeTo(0x10,[0x02,3,line,rgb_array,(3+line+sum_rgb_array)&0xFF])}\n"
 }
 
 Blockly.Blocks.clear_screen = {
