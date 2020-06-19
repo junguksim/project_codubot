@@ -144,32 +144,28 @@
               <div style='display:table; height:100%; width:50%; float:left;'>
                 <div style='display: table-cell; vertical-align:middle; text-align:center;'>
                   <div style='height:30%;'>
-                    <!--<h1>상단 프레임</h1>-->
-                    <h3>로봇 구동 <span id="clock">0</span> 초 째입니다.</h3>
-                    <button onclick="clock_start()">Clock start</button>
-                    <button onclick="clock_end()">Clock end</button>
                   </div>
                   <div style='height:30%;'>
-                    <h2 id='ir_sensor'></h2>
+                    <h4 id='ir_sensor'></h4>
                     <canvas id='ir_graph' width='300' height='100'></canvas>
                   </div>
                   <div style='height:30%;'>
                     <!--<h1>하단 프레임</h1>-->
                     <table style='width:100%'>
                       <tr>
-                        <td width="20%">
+                        <!-- <td width="20%">
                           <div><img src="img/alarm.jpg" width="50%" onmousedown='robot_alarm()'
                               ontouchstart='robot_alarm()' onmouseup='robot_alarm_stop()'
                               ontouchend='robot_alarm_stop()' /> <img src="img/restart.jpg" width="50%"
                               onclick="robot_resume()" /></div>
-                        </td>
+                        </td> -->
                         <td>
                           <h3>SPEED : <div style='display:inline;' id='speed'>0</div> rev/s</h3>
                         </td>
-                        <td width="20%">
+                        <!-- <td width="20%">
                           <div><img src="img/pause.jpg" width="50%" onclick="robot_wait()" /> <img src="img/stop.jpg"
                               width="50%" onclick="robot_stop()" /></div>
-                        </td>
+                        </td> -->
                       </tr>
                     </table>
                   </div>
@@ -400,12 +396,7 @@
       //$('#sidebar').hide();
 
       function displaySensorData(sensor_data) {
-        //var sensor_data = Espruino.Core.Terminal.getTerminalLine(1);
-        //var s_data = String(sensor_data)
-        if (String(sensor_data).startsWith('[')) {
           $("#ir_sensor").text(sensor_data);
-          sensor_data = sensor_data.replace('[', '');
-          sensor_data = sensor_data.replace(']', '');
           var sensor_data_list = sensor_data.split(',');
 
           ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -418,7 +409,7 @@
           ctx.fillStyle = '#6666FF';
           ctx.fill();
           ctx.closePath();
-        }
+        
       }
 
       function Control() {
@@ -434,9 +425,6 @@
 
           $('.split-pane__left').css('width', '100%');
           $('.split-pane__right').css('width', '0%');
-
-          //StartSensorId = setInterval(displaySensorData, 100);
-
         }
         else {
           //$('#sidebar').show();
@@ -444,7 +432,6 @@
           $('#console').show();
           $('.split-pane__left').css('width', left_width);
           $('.split-pane__right').css('width', right_width);
-          //clearInterval(StartSensorId);
         }
       }
       function LEDMatrix() {
@@ -490,8 +477,6 @@
 
           })
 
-          //StartSensorId = setInterval(displaySensorData, 100);
-
         }
         else {
           //$('#sidebar').show();
@@ -501,20 +486,27 @@
           $('#console').show();
           $('.split-pane__left').css('width', left_width);
           $('.split-pane__right').css('width', right_width);
-          //clearInterval(StartSensorId);
         }
+      }
+      function get_ir_sensor() {
+        Espruino.Core.Terminal.typeCharacters('ir_adc\n');
+        var sensor_data = Espruino.Core.Terminal.getTerminalLine(1);
+        sensor_data = sensor_data.replace('=', '');
+        console.log(sensor_data)
+        return sensor_data;
       }
       function StartSensor() {
         // if not connected, then should return
 
         Espruino.Core.Terminal.typeCharacters('clearInterval(ir_adc_loop)\n')
 
-        var StartSensor_init = 'var i2c=new I2C();i2c.setup({scl:D27,sda:D26,bitrate:100000});var ir_adc=[0,0,0,0,0];var ir_adc_loop=setInterval(function(){i2c.writeTo(0x01,[1,10]);i2c.writeTo(0x01,[14]);var ir_i2c=i2c.readFrom(0x01,10);ir_adc=[((ir_i2c[0]*256)+ir_i2c[1]),((ir_i2c[2]*256)+ir_i2c[3]),((ir_i2c[4]*256)+ir_i2c[5]),((ir_i2c[6]*256)+ir_i2c[7]),((ir_i2c[8]*256)+ir_i2c[9])];console.log("s0:",ir_adc);},500);var LEFT_MOTOR=0,RIGHT_MOTOR=1,CLOCKWISE=0,COUNTER_CLOCKWISE=1,FORWARD=0,BACKWARD=1,LEFT=2,RIGHT=3,DIST_TO_ANGLE=33.645,ROBOT_ANGLE_TO_WHEEL_ANGLE=3;function robot_turn2(o,_,t){o==LEFT&&o==RIGHT&&i2c.writeTo(1,[2,4,o,_,t*ROBOT_ANGLE_TO_WHEEL_ANGLE>>8,t*ROBOT_ANGLE_TO_WHEEL_ANGLE&255,4+o+_+(t*ROBOT_ANGLE_TO_WHEEL_ANGLE>>8)+(t*ROBOT_ANGLE_TO_WHEEL_ANGLE&255)&255])};function robot_move_angle_no_time(dir,vel,angle){i2c.writeTo(0x01,[0x02,4,dir,vel,angle>>8,angle&0x00FF,(4+dir+vel+(angle>>8)+(angle&0x00FF))&0xFF])};function robot_stop(){i2c.writeTo(0x01,[0x02,5,(5)&0xFF])}\n';
+        var StartSensor_init = 'var i2c=new I2C();i2c.setup({scl:D27,sda:D26,bitrate:400000});var ir_adc=[0,0,0,0,0];var ir_adc_loop=setInterval(function(){i2c.writeTo(0x0A,[1,10]);i2c.writeTo(0x0A,[14]);var ir_i2c=i2c.readFrom(0x0A,10);ir_adc=[((ir_i2c[0]*256)+ir_i2c[1]),((ir_i2c[2]*256)+ir_i2c[3]),((ir_i2c[4]*256)+ir_i2c[5]),((ir_i2c[6]*256)+ir_i2c[7]),((ir_i2c[8]*256)+ir_i2c[9])];},10);var logIr=setInterval(function() {console.log("s0:"+ir_adc)}, 100);var FORWARD=0;var BACKWARD=1;var LEFT=2;var RIGHT=3;var DIST_TO_ANGLE=34.716;var ROBOT_ANGLE_TO_WHEEL_ANGLE=2.242;var codubot_velocity=50;function robot_move_dist(dir,vel,dist_cm,wait){var wheel_angle=Math.round(dist_cm*DIST_TO_ANGLE);if((dir==FORWARD)||(dir==BACKWARD)){if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=0){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=0){}}i2c.writeTo(0x0A,[0x02,4,dir,vel,wheel_angle>>8,wheel_angle&0x00FF,(4+dir+vel+(wheel_angle>>8)+(wheel_angle&0x00FF))&0xFF]);if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=1){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=1){}}}}function robot_turn(dir,vel,angle,wait){var wheel_angle=Math.round(angle*ROBOT_ANGLE_TO_WHEEL_ANGLE);if((dir==LEFT)||(dir==RIGHT)){if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=0){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=0){}}i2c.writeTo(0x0A,[0x02,4,dir,vel,wheel_angle>>8,wheel_angle&0x00FF,(4+dir+vel+(wheel_angle>>8)+(wheel_angle&0x00FF))&0xFF]);if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=1){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=1){}}}}function robot_move_angle(dir,vel,angle,wait){if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=0){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=0){}}i2c.writeTo(0x0A,[0x02,4,dir,vel,angle>>8,angle&0x00FF,(4+dir+vel+(angle>>8)+(angle&0x00FF))&0xFF]);if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=1){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=1){}}};function robot_stop(){i2c.writeTo(0x0A,[0x02,5,(5)&0xFF])};\n';
         Espruino.Core.Terminal.typeCharacters(StartSensor_init);
-
+        return;
       }
       function EndSensor() {
         Espruino.Core.Terminal.typeCharacters('clearInterval(ir_adc_loop)\n')
+        Espruino.Core.Terminal.typeCharacters('clearInterval(logIr)\n')
       }
       function robot_stop() {
         Espruino.Core.Terminal.typeCharacters('cancel_all_move()\n')
@@ -538,7 +530,7 @@
         var clock = document.getElementById('clock');
 
         //var txt = Espruino.Core.Terminal.getTerminalLine(1);
-        console.log(Math.round(Number((txt.split('='))[1])));
+        //console.log(Math.round(Number((txt.split('='))[1])));
         if (isNaN(Math.round(Number((txt.split('='))[1]))) == true) {
           clock.innerHTML = 0;
         }
@@ -577,10 +569,10 @@
         var sensor_data = Espruino.Core.Terminal.getTerminalLine(1);
         //var s_data = String(sensor_data)
         if (String(sensor_data).startsWith('s0:')) {
-          displaySensorData(sensor_data.substring(4));
+          displaySensorData(sensor_data.substring(3));
         }
         else if (String(sensor_data).startsWith('=')) {
-          displayClock(sensor_data);
+          //displayClock(sensor_data);
         }
         else {
           // log message
@@ -685,19 +677,19 @@
 
     <script type="text/javascript">
       function go() {
-        Espruino.Core.Terminal.typeCharacters('robot_move_angle_no_time(0,0,0);\n');
+        Espruino.Core.Terminal.typeCharacters('robot_move_dist(0,0,0,false);\n');
         $('#speed').text('1');
       }
       function back() {
-        Espruino.Core.Terminal.typeCharacters('robot_move_angle_no_time(1,0,0);\n');
+        Espruino.Core.Terminal.typeCharacters('robot_move_dist(1,0,0,false);\n');
         $('#speed').text('1');
       }
       function turnL() {
-        Espruino.Core.Terminal.typeCharacters('robot_move_angle_no_time(2,0,0);\n');
+        Espruino.Core.Terminal.typeCharacters('robot_turn(2,0,0,false);\n');
         $('#speed').text('0.5');
       }
       function turnR() {
-        Espruino.Core.Terminal.typeCharacters('robot_move_angle_no_time(3,0,0);\n');
+        Espruino.Core.Terminal.typeCharacters('robot_turn(3,0,0,false);\n');
         $('#speed').text('0.5');
       }
       function stop() {

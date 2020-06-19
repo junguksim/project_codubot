@@ -246,3 +246,22 @@ function motor_move (motor, dir, vel, angle, wait) {
 function motor_stop(motor) {
   i2c.writeTo(0x0A, [0x02, 3, motor, (3 + motor) & 0xFF]);
 }
+
+function get_ir_adc(idx) {
+    return ir_adc[idx];
+}
+
+//* 거리모듈
+var dist_slave_id = 0; 
+var dist_16 = [0, 0, 0];
+var dist_loop = setInterval(function() {
+  var dist_8 = i2c.readFrom(0x0B, 8);
+  dist_slave_id = dist_8[0];
+  dist_16 = [((dist_8[2] * 256) + dist_8[3]), 
+        ((dist_8[4] * 256) + dist_8 [5]), 
+        ((dist_8[6] * 256) + dist_8 [7])];
+}, 10);
+
+function get_distance(idx) {
+    return dist_16[idx];
+}

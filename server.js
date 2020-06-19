@@ -130,7 +130,7 @@ var server = https.createServer(options , function(request, response) {
 });
 
 server.listen(SERVER_PORT, function() {
-    console.log((new Date()) + ' Server is listening on port '+SERVER_PORT);
+    console.log((new Date()) + ' Server is listening on port '+SERVER_PORT); 
 });
 
 wsServer = new WebSocketServer({

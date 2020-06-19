@@ -13,6 +13,8 @@
     <script type="text/javascript" src="blockly_codubot_variables.js"></script>
     <script type="text/javascript" src="blockly_codubot_dotmatrix.js"></script>
     <script type="text/javascript" src="blockly_espruino.js"></script>
+    <script type="text/javascript" src="blockly_distance.js"></script>
+    <script type="text/javascript" src="blockly_javascript.js"></script>
     <style>
       html, body {
         background-color: #fff;
@@ -258,6 +260,13 @@
         <title name="VAR">item</title>
       </block>
     </category>
+    <category name="Javascript">
+      <block type="javascript_code"></block>
+      <block type="jsexpression"></block>
+      <block type="console_log">
+        <value name="code"></value>
+      </block>
+    </category>
     <category name="CoduBot">
       <block type='codubot_ready'></block>
       <block type='set_velocity'>
@@ -287,6 +296,10 @@
       <block type="set_brightness"></block>
       <block type="draw_single_led"></block>
       <block type="draw_single_line"></block>
+    </category>
+    <category name="Distance Sensor">
+      <block type="distance_sensor_start"></block>
+      <block type="get_distance"></block>
     </category>
   </xml>
 
