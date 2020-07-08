@@ -265,3 +265,53 @@ var dist_loop = setInterval(function() {
 function get_distance(idx) {
     return dist_16[idx];
 }
+
+//* OLED 모듈
+var FACE_DEFAULT = 0;
+var FACE_ANGRY = 1; var FACE_BLINK = 2;
+var FACE_CURIOUS = 3; var FACE_SLEEPY = 4
+
+
+function oled_face(number) {
+  i2c.writeTo(0x0F, [0x02, 1, number, (1 + number) & 0xFF]);
+}
+
+//* 보이스 모듈
+// i2c.writeTo(0x0D, [1, 1]);
+// i2c.writeTo(0x0D, [15]);
+var temp_mp3 = i2c.readFrom(0x0D, 1);
+var max_number_mp3 = temp_mp3[0];
+
+function play_sound(number) {
+  i2c.writeTo(0x0D, [0x02, 80, Math.min(Math.max(parseInt(number), 1), max_number_mp3), (80 + Math.min(Math.max(parseInt(number), 1), max_number_mp3)) & 0xFF]);
+}
+
+function stop_sound() {
+  i2c.writeTo(0x0D, [0x02, 83, (83) & 0xFF]);
+}
+
+function change_volume_by_ratio(ratio) {
+  ratio = Math.min(Math.max(parseInt(Math.round(0.3 * ratio)), 0), 30);
+  i2c.writeTo(0x0D, [1, 1]);
+  i2c.writeTo(0x0D, [14]);
+  var current_volume = i2c.readFrom(0x0D, 1);
+  var number = ratio - current_volume;
+  for(var i = 0 ; i < Math.abs(number) ; i++)
+  {
+    if(number > 0)
+      i2c.writeTo(0x0D, [0x02, 85, (85) & 0xFF]);
+    else if(number < 0)
+      i2c.writeTo(0x0D, [0x02, 68, (68) & 0xFF]);
+  }
+};
+
+function change_volume_by_number(number) {
+  number = Math.min(Math.max(parseInt(number), -30), 30);
+  for(var i = 0 ; i < Math.abs(number) ; i++)
+  {
+    if(number > 0)
+      i2c.writeTo(0x0D, [0x02, 85, (85) & 0xFF]);
+    else if(number < 0)
+      i2c.writeTo(0x0D, [0x02, 68, (68) & 0xFF]);
+  }
+};
