@@ -66,6 +66,7 @@ Blockly.JavaScript.robot_move_dist = function(block) {
     else {
         dir = block.getFieldValue("distDir")
         console.log("typeof : " + typeof(dir))
+        console.log(`dir : ${dir}\n====================\n`);
         if(typeof(dir) != "number") {
             dir = 0;
         }
@@ -117,6 +118,145 @@ Blockly.JavaScript.robot_turn = function(block) {
     }
     return `robot_turn(${dir}, codubot_velocity, ${angle}, true);\n`;
 }
+let motorTurnValid = false;
+let motorValid = false;
+Blockly.Blocks.motor_move_by_angle = {
+    category : 'CoduBot',
+    init : function() {
+        this.appendDummyInput()
+            .appendField('Turn ')
+            .appendField(new Blockly.FieldDropdown([
+                ['Left motor', 0],
+                ['Right motor', 1]
+            ],this.validate), "turnMotor")
+        this.appendDummyInput()
+            .appendField('to')
+        this.appendValueInput('angle')
+            .setCheck(["Number"])
+        this.appendDummyInput()
+            .appendField('deg')
+            .appendField(new Blockly.FieldDropdown([
+                ['CW', 0],
+                ['CCW', 1]
+            ],this.validateDir), "motorTurnDir")
+        this.setColour(200);
+        this.setNextStatement(true);
+        this.setInputsInline(true);
+        this.setPreviousStatement(true);
+    },
+    validate : function(newValue) {
+        motorValid = true;
+    },
+    validateDir : function(newValue2) {
+        motorTurnValid = true;
+    }
+}
+
+Blockly.JavaScript.motor_move_by_angle = function(block) {
+    let angle = Blockly.JavaScript.valueToCode(this, 'angle', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
+    if(motorValid === false) {
+        motor = 0;
+    }
+    else {
+        motor = block.getFieldValue("turnMotor")
+    }
+    if(motorTurnValid === false) {
+        dir = 0;
+    }
+    else {
+        dir = block.getFieldValue("motorTurnDir")
+    }
+    console.log(`motor : ${motor}, dir : ${dir}\n===================================\n`);
+    console.log(`typeof motor : ${typeof(motor)}, typeof dir : ${typeof(dir)}\n`);
+    return `motor_move(${motor}, ${dir}, codubot_velocity, ${angle}, true)\n`;
+}
+
+let motorTurnValid_ = false;
+let motorValid_ = false;
+Blockly.Blocks.motor_move_by_vel = {
+    category : 'CoduBot',
+    init : function() {
+        this.appendDummyInput()
+            .appendField('Turn ')
+            .appendField(new Blockly.FieldDropdown([
+                ['Left motor', 0],
+                ['Right motor', 1]
+            ],this.validate), "turnMotor_")
+        this.appendDummyInput()
+            .appendField(',velocity')
+        this.appendValueInput('vel')
+            .setCheck(["Number"])
+        this.appendDummyInput()
+            .appendField('%')
+            .appendField(new Blockly.FieldDropdown([
+                ['CW', 0],
+                ['CCW', 1]
+            ],this.validateDir), "motorTurnDir_")
+        this.setColour(200);
+        this.setNextStatement(true);
+        this.setInputsInline(true);
+        this.setPreviousStatement(true);
+    },
+    validate : function(newValue) {
+        motorValid_ = true;
+    },
+    validateDir : function(newValue2) {
+        motorTurnValid_ = true;
+    }
+}
+
+Blockly.JavaScript.motor_move_by_vel = function(block) {
+    let vel = Blockly.JavaScript.valueToCode(this, 'vel', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
+    if(motorValid_ === false) {
+        motor_ = 0;
+    }
+    else {
+        motor_ = block.getFieldValue("turnMotor_")
+    }
+    if(motorTurnValid_ === false) {
+        dir_ = 0;
+    }
+    else {
+        dir_ = block.getFieldValue("motorTurnDir_")
+    }
+    return `motor_move(${motor_}, ${dir_}, ${vel}, 0, false)\n`;
+}
+
+let motorValid__ = false;
+Blockly.Blocks.motor_stop = {
+    category : 'CoduBot',
+    init : function() {
+        this.appendDummyInput()
+            .appendField('Stop ')
+            .appendField(new Blockly.FieldDropdown([
+                ['Left', 0],
+                ['Right', 1]
+            ],this.validate), "stopMotor")
+        this.appendDummyInput()
+            .appendField('motor')
+        this.setColour(200);
+        this.setNextStatement(true);
+        this.setInputsInline(true);
+        this.setPreviousStatement(true);
+    },
+    validate : function(newValue) {
+        motorValid__ = true;
+    }
+}
+
+Blockly.JavaScript.motor_stop = function(block) {
+    if(motorValid__ === false) {
+        motor__ = 0;
+    }
+    else {
+        motor__ = block.getFieldValue("stopMotor")
+        if(typeof(motor__) != "number") {
+            motor = 0;
+        }
+    }
+    return `motor_stop(${motor__})\n`;
+}
+
 
 Blockly.Blocks.robot_stop = {
     category: 'CoduBot',

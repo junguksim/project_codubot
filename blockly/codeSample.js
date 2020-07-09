@@ -107,56 +107,78 @@ function robot_move_angle_no_time(dir, vel, angle) {
 
 //* dotmatrix
 
-var i2c = new I2C(); i2c.setup({ scl: D27, sda: D26, bitrate: 400000 });
 function set_brightness(brightness) {
-    i2c.writeTo(0x10, [0x02, 1, brightness, (1 + brightness) & 0xFF]);
+  i2c.writeTo(0x10, [0x02, 1, brightness, (1 + brightness) & 0xFF]);
+}
+
+function print_single_dot(dot, red, green, blue) {
+  i2c.writeTo(0x10, [0x02, 2, dot, red, green, blue, (2 + dot + red + green + blue) & 0xFF]);
+}
+
+function print_single_line(line, rgb_array) {
+  var sum_rgb_array = 0;
+  for(var i = 0 ; i < 7 ; i++) {
+    let sum = rgb_array[i].reduce((a, b) => a + b, 0);
+    console.log(sum)
+    sum_rgb_array = (sum_rgb_array + sum) & 0xFF;
   }
-  
-  function print_single_dot(dot, red, green, blue) {
-    i2c.writeTo(0x10, [0x02, 2, dot, red, green, blue, (2 + dot + red + green + blue) & 0xFF]);
+  i2c.writeTo(0x10, [0x02, 3, line, rgb_array, (3 + line + sum_rgb_array) & 0xFF]);
+}
+
+function save_single_dot(dot, red, green, blue) {
+  i2c.writeTo(0x10, [0x02, 4, dot, red, green, blue, (4 + dot + red + green + blue) & 0xFF]);
+}
+
+function save_single_line(line, rgb_array) {
+  var sum_rgb_array = 0;
+  for(var i = 0 ; i < 7 ; i++) {
+    let sum = rgb_array[i].reduce((a, b) => a + b, 0);
+    console.log(sum)
+    sum_rgb_array = (sum_rgb_array + sum) & 0xFF;
   }
-  
-  function print_single_line(rgb_array) {
-    console.log('===========rgbStr================')
-    console.log(rgb_array);
-    var line = rgb_array[0];
-    var sum_rgb_array = 0;
-    for(var i = 0 ; i < 7 ; i++) {
-        sum_rgb_array = (sum_rgb_array + rgb_array[i].reduce((a, b)=>a+b)) & 0xFF;
-    }
-    i2c.writeTo(0x10, [0x02, 3, line, rgb_array, (3 + line + sum_rgb_array) & 0xFF]);
+  i2c.writeTo(0x10, [0x02, 5, line, rgb_array, (5 + line + sum_rgb_array) & 0xFF]);
+}
+
+function update_dot_matrix() {
+  i2c.writeTo(0x10, [0x02, 6, (6) & 0xFF]);
+}
+
+function print_every_line(rgb_array) {
+  for(var i = 0 ; i < 7 ; i++) {
+    save_single_line(i, [rgb_array[(i * 7) + 0], rgb_array[(i * 7) + 1], rgb_array[(i * 7) + 2], rgb_array[(i * 7) + 3], rgb_array[(i * 7) + 4], rgb_array[(i * 7) + 5], rgb_array[(i * 7) + 6]]);
   }
-  
-//   function save_single_dot(dot, red, green, blue) {
-//     i2c.writeTo(0x07, [0x02, 4, dot, red, green, blue, (4 + dot + red + green + blue) & 0xFF]);
-//   }
-  
-//   function save_single_line(line, rgb_array) {
-//     var sum_rgb_array = 0;
-//     for(var i = 0 ; i < 7 ; i++)
-//       sum_rgb_array = (sum_rgb_array + rgb_array[i].reduce((acc, cur) => acc + cur, 0)) & 0xFF;
-//     i2c.writeTo(0x10, [0x02, 5, line, rgb_array, (5 + line + sum_rgb_array) & 0xFF]);
-//   }
-  
-//   function updata_dot_matrix() {
-//     i2c.writeTo(0x10, [0x02, 6, (6) & 0xFF]);
-//   }
-  
-//   function print_every_line(rgb_array) {
-//     for(var i = 0 ; i < 7 ; i++)
-//       save_single_line(i, [rgb_array[(i * 7) + 0], rgb_array[(i * 7) + 1], rgb_array[(i * 7) + 2], rgb_array[(i * 7) + 3], rgb_array[(i * 7) + 4], rgb_array[(i * 7) + 5], rgb_array[(i * 7) + 6]]);
-//     updata_dot_matrix();
-//   }
-  
-//   function clear_dot_matrix() {
-//     print_every_line([[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
-//                       [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
-//                       [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
-//                       [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
-//                       [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
-//                       [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
-//                       [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]);
-//   }
+  update_dot_matrix();
+}
+
+function clear_dot_matrix() {
+  print_every_line([[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
+                    [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
+                    [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
+                    [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
+                    [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
+                    [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
+                    [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]);
+}
+
+function set_string_color(rgb_array) {
+  i2c.writeTo(0x10, [0x02, 7, [rgb_array[0], rgb_array[1], rgb_array[2]], (7 + rgb_array[0] + rgb_array[1] + rgb_array[2]) & 0xFF]);
+}
+
+function print_string(string_array) {
+  var ascii_array = [];
+  var ascii_array_sum = 0;
+  var this_ascii = 0;
+  for(var i = 0 ; i < ((string_array.length > 20) ? 20 : string_array.length) ; i++)
+  {
+    if((string_array[i].charCodeAt(0) >= 32) && (string_array[i].charCodeAt(0) <= 126))
+      this_ascii = string_array[i].charCodeAt(0);
+    else
+      this_ascii = 63; // "?"
+    ascii_array.push(this_ascii);
+    ascii_array_sum = ascii_array_sum + this_ascii;
+  }
+  i2c.writeTo(0x10, [0x02, 8, ((string_array.length > 20) ? 20 : string_array.length), ascii_array, (8 + ((string_array.length > 20) ? 20 : string_array.length) + ascii_array_sum) & 0xFF]);
+}
 
 // * 0605 기본 모듈
 var i2c = new I2C();
@@ -315,3 +337,29 @@ function change_volume_by_number(number) {
       i2c.writeTo(0x0D, [0x02, 68, (68) & 0xFF]);
   }
 };
+
+// * 레인보우
+var RAINBOW_CW = 0;
+var RAINBOW_CCW = 1;
+var LED_CW = 2;
+var LED_CCW = 3;
+
+function rainbow_clear() {
+  i2c.writeTo(0x0E, [0x02, 1, (1) & 0xFF]);
+}
+
+function rainbow_single_led(dot, red, green, blue) {
+  i2c.writeTo(0x0E, [0x02, 2, dot, red, green, blue, (2  + dot + red + green +  blue) & 0xFF]);
+}
+
+function rainbow_all_led(red, green, blue) {
+  i2c.writeTo(0x0E, [0x02, 3, red, green, blue, (3 + red + green + blue) & 0xFF]);
+}
+
+function rainbow_set_effect(effect_number, delay_ms) {
+  var number = ((effect_number > 3) ? 3 : effect_number);
+  number = ((number < 0) ? 0 : number);
+  var ms = ((delay_ms > 100) ? 100 : delay_ms);
+  ms = ((ms < 0) ? 0 : ms);
+  i2c.writeTo(0x0E, [0x02, 4, number, ms, (4 + number + ms) & 0xFF]);
+}
