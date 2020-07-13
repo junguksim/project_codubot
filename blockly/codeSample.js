@@ -203,25 +203,25 @@ var codubot_velocity = 50;
 function robot_move_dist(dir, vel, dist_cm, wait) {
   var wheel_angle = Math.round(dist_cm * DIST_TO_ANGLE);
   if ((dir == FORWARD) || (dir == BACKWARD)) {
-    if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]);  i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 0); i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 0);}
+    if(wait == true && wheel_angle != 0) {i2c.writeTo(0x0A, [1, 1]);  i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 0) {}; i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 0) {};}
     i2c.writeTo(0x0A, [0x02, 4, dir, vel, wheel_angle >> 8, wheel_angle & 0x00FF, (4 + dir + vel + (wheel_angle >> 8) + (wheel_angle & 0x00FF)) & 0xFF]);
-    if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]); i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 1); i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 1);}
+    if(wait == true && wheel_angle != 0) {i2c.writeTo(0x0A, [1, 1]); i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 1) {}; i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 1) {};}
   }
 }
 
 function robot_turn(dir, vel, angle, wait) {
   var wheel_angle = Math.round(angle * ROBOT_ANGLE_TO_WHEEL_ANGLE);
   if ((dir == LEFT) || (dir == RIGHT)) {
-    if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]);  i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 0); i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 0);}
+    if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]);  i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 0) {}; i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 0) {};}
     i2c.writeTo(0x0A, [0x02, 4, dir, vel, wheel_angle >> 8, wheel_angle & 0x00FF, (4 + dir + vel + (wheel_angle >> 8) + (wheel_angle & 0x00FF)) & 0xFF]);
-    if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]); i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 1); i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 1);}
+    if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]); i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 1) {}; i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 1) {};}
   }
 }
 
 function robot_move_angle(dir, vel, angle, wait) {
-  if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]);  i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 0); i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 0);}
+  if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]);  i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 0) {}; i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 0) {};}
   i2c.writeTo(0x0A, [0x02, 4, dir, vel, angle >> 8, angle & 0x00FF, (4 + dir + vel + (angle >> 8) + (angle & 0x00FF)) & 0xFF]);
-  if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]); i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 1); i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 1);}
+  if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]); i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 1) {}; i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 1) {};}
 }
 
 function robot_stop() {
@@ -232,9 +232,9 @@ var LEFT_MOTOR = 0; var RIGHT_MOTOR = 1;
 var CLOCKWISE = 0; var COUNTER_CLOCKWISE = 1;
 
 function motor_move (motor, dir, vel, angle, wait) {
-  if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]); i2c.writeTo(0x0A, [(motor == LEFT_MOTOR ? 12 : 13)]); while (i2c.readFrom(0x0A, 1) != 0);}
+  if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]); i2c.writeTo(0x0A, [(motor == LEFT_MOTOR ? 12 : 13)]); while (i2c.readFrom(0x0A, 1) != 0) {};}
   i2c.writeTo(0x0A, [0x02, (motor == LEFT_MOTOR ? 1 : 2), dir, vel, angle >> 8, angle & 0x00FF, ((motor == LEFT_MOTOR ? 1 : 2) + dir + vel + (angle >> 8) + (angle & 0x00FF)) & 0xFF]);
-  if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]); i2c.writeTo(0x0A, [(motor == LEFT_MOTOR ? 12 : 13)]); while (i2c.readFrom(0x0A, 1) != 1);}
+  if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]); i2c.writeTo(0x0A, [(motor == LEFT_MOTOR ? 12 : 13)]); while (i2c.readFrom(0x0A, 1) != 1) {};}
 }
 
 function motor_stop(motor) {

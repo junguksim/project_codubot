@@ -9,7 +9,7 @@ Blockly.Blocks.codubot_ready = {
     }
 }
 Blockly.JavaScript.codubot_ready = function () {
-    return "var i2c=new I2C();i2c.setup({scl:D27,sda:D26,bitrate:400000});var ir_adc=[0,0,0,0,0];var ir_adc_loop=setInterval(function(){i2c.writeTo(0x0A,[1,10]);i2c.writeTo(0x0A,[14]);var ir_i2c=i2c.readFrom(0x0A,10);ir_adc=[((ir_i2c[0]*256)+ir_i2c[1]),((ir_i2c[2]*256)+ir_i2c[3]),((ir_i2c[4]*256)+ir_i2c[5]),((ir_i2c[6]*256)+ir_i2c[7]),((ir_i2c[8]*256)+ir_i2c[9])]},10);var FORWARD=0;var BACKWARD=1;var LEFT=2;var RIGHT=3;var DIST_TO_ANGLE=33.52;var ROBOT_ANGLE_TO_WHEEL_ANGLE=2.242;var codubot_velocity=50;function robot_move_dist(dir,vel,dist_cm,wait){var wheel_angle=Math.round(dist_cm*DIST_TO_ANGLE);if((dir==FORWARD)||(dir==BACKWARD)){if(wait==true&&angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=0);i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=0)}i2c.writeTo(0x0A,[0x02,4,dir,vel,wheel_angle>>8,wheel_angle&0x00FF,(4+dir+vel+(wheel_angle>>8)+(wheel_angle&0x00FF))&0xFF]);if(wait==true&&angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=1);i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=1)}}}function robot_turn(dir,vel,angle,wait){var wheel_angle=Math.round(angle*ROBOT_ANGLE_TO_WHEEL_ANGLE);if((dir==LEFT)||(dir==RIGHT)){if(wait==true&&angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=0);i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=0)}i2c.writeTo(0x0A,[0x02,4,dir,vel,wheel_angle>>8,wheel_angle&0x00FF,(4+dir+vel+(wheel_angle>>8)+(wheel_angle&0x00FF))&0xFF]);if(wait==true&&angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=1);i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=1)}}}function robot_move_angle(dir,vel,angle,wait){if(wait==true&&angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=0);i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=0)}i2c.writeTo(0x0A,[0x02,4,dir,vel,angle>>8,angle&0x00FF,(4+dir+vel+(angle>>8)+(angle&0x00FF))&0xFF]);if(wait==true&&angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=1);i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=1)}}function robot_stop(){i2c.writeTo(0x0A,[0x02,5,(5)&0xFF])}var LEFT_MOTOR=0;var RIGHT_MOTOR=1;var CLOCKWISE=0;var COUNTER_CLOCKWISE=1;function motor_move(motor,dir,vel,angle,wait){if(wait==true&&angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[(motor==LEFT_MOTOR?12:13)]);while(i2c.readFrom(0x0A,1)!=0)}i2c.writeTo(0x0A,[0x02,(motor==LEFT_MOTOR?1:2),dir,vel,angle>>8,angle&0x00FF,((motor==LEFT_MOTOR?1:2)+dir+vel+(angle>>8)+(angle&0x00FF))&0xFF]);if(wait==true&&angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[(motor==LEFT_MOTOR?12:13)]);while(i2c.readFrom(0x0A,1)!=1)}}function motor_stop(motor){i2c.writeTo(0x0A,[0x02,3,motor,(3+motor)&0xFF])}\n"
+    return "var i2c=new I2C();i2c.setup({scl:D27,sda:D26,bitrate:400000});var ir_adc=[0,0,0,0,0];var ir_adc_loop=setInterval(function(){i2c.writeTo(0x0A,[1,10]);i2c.writeTo(0x0A,[14]);var ir_i2c=i2c.readFrom(0x0A,10);ir_adc=[((ir_i2c[0]*256)+ir_i2c[1]),((ir_i2c[2]*256)+ir_i2c[3]),((ir_i2c[4]*256)+ir_i2c[5]),((ir_i2c[6]*256)+ir_i2c[7]),((ir_i2c[8]*256)+ir_i2c[9])]},10);var FORWARD=0;var BACKWARD=1;var LEFT=2;var RIGHT=3;var DIST_TO_ANGLE=33.52;var ROBOT_ANGLE_TO_WHEEL_ANGLE=2.242;var codubot_velocity=50;function robot_move_dist(dir,vel,dist_cm,wait){var wheel_angle=Math.round(dist_cm*DIST_TO_ANGLE);if((dir==FORWARD)||(dir==BACKWARD)){if(wait==true&&wheel_angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=0){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=0){}}i2c.writeTo(0x0A,[0x02,4,dir,vel,wheel_angle>>8,wheel_angle&0x00FF,(4+dir+vel+(wheel_angle>>8)+(wheel_angle&0x00FF))&0xFF]);if(wait==true&&wheel_angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=1){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=1){}}}}function robot_turn(dir,vel,angle,wait){var wheel_angle=Math.round(angle*ROBOT_ANGLE_TO_WHEEL_ANGLE);if((dir==LEFT)||(dir==RIGHT)){if(wait==true&&angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=0){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=0){}}i2c.writeTo(0x0A,[0x02,4,dir,vel,wheel_angle>>8,wheel_angle&0x00FF,(4+dir+vel+(wheel_angle>>8)+(wheel_angle&0x00FF))&0xFF]);if(wait==true&&angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=1){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=1){}}}}function robot_move_angle(dir,vel,angle,wait){if(wait==true&&angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=0){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=0){}}i2c.writeTo(0x0A,[0x02,4,dir,vel,angle>>8,angle&0x00FF,(4+dir+vel+(angle>>8)+(angle&0x00FF))&0xFF]);if(wait==true&&angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=1){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=1){}}}function robot_stop(){i2c.writeTo(0x0A,[0x02,5,(5)&0xFF])}var LEFT_MOTOR=0;var RIGHT_MOTOR=1;var CLOCKWISE=0;var COUNTER_CLOCKWISE=1;function motor_move(motor,dir,vel,angle,wait){if(wait==true&&angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[(motor==LEFT_MOTOR?12:13)]);while(i2c.readFrom(0x0A,1)!=0){}}i2c.writeTo(0x0A,[0x02,(motor==LEFT_MOTOR?1:2),dir,vel,angle>>8,angle&0x00FF,((motor==LEFT_MOTOR?1:2)+dir+vel+(angle>>8)+(angle&0x00FF))&0xFF]);if(wait==true&&angle!=0){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[(motor==LEFT_MOTOR?12:13)]);while(i2c.readFrom(0x0A,1)!=1){}}}function motor_stop(motor){i2c.writeTo(0x0A,[0x02,3,motor,(3+motor)&0xFF])}\n"
 }
 
 Blockly.Blocks.set_velocity = {
@@ -65,9 +65,7 @@ Blockly.JavaScript.robot_move_dist = function(block) {
     }
     else {
         dir = block.getFieldValue("distDir")
-        console.log("typeof : " + typeof(dir))
-        console.log(`dir : ${dir}\n====================\n`);
-        if(typeof(dir) != "number") {
+        if(typeof(dir) == "string") {
             dir = 0;
         }
     }
@@ -159,12 +157,18 @@ Blockly.JavaScript.motor_move_by_angle = function(block) {
     }
     else {
         motor = block.getFieldValue("turnMotor")
+        if(typeof(motor) == "string") {
+            motor = 0;
+        }
     }
     if(motorTurnValid === false) {
         dir = 0;
     }
     else {
         dir = block.getFieldValue("motorTurnDir")
+        if(typeof(dir) == "string") {
+            dir = 0;
+        }
     }
     console.log(`motor : ${motor}, dir : ${dir}\n===================================\n`);
     console.log(`typeof motor : ${typeof(motor)}, typeof dir : ${typeof(dir)}\n`);
@@ -212,12 +216,18 @@ Blockly.JavaScript.motor_move_by_vel = function(block) {
     }
     else {
         motor_ = block.getFieldValue("turnMotor_")
+        if(typeof(motor_) == "string") {
+            dir = 0;
+        }
     }
     if(motorTurnValid_ === false) {
         dir_ = 0;
     }
     else {
         dir_ = block.getFieldValue("motorTurnDir_")
+        if(typeof(dir) == "string") {
+            dir = 0;
+        }
     }
     return `motor_move(${motor_}, ${dir_}, ${vel}, 0, false)\n`;
 }
@@ -250,8 +260,8 @@ Blockly.JavaScript.motor_stop = function(block) {
     }
     else {
         motor__ = block.getFieldValue("stopMotor")
-        if(typeof(motor__) != "number") {
-            motor = 0;
+        if(typeof(motor__) == "string") {
+            motor__ = 0;
         }
     }
     return `motor_stop(${motor__})\n`;
