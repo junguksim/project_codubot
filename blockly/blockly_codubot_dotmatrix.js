@@ -139,6 +139,8 @@ Blockly.Blocks.draw_single_line = {
             .appendField(new Blockly.FieldColour(null, this.validate4), 'COLOUR')
             .appendField(new Blockly.FieldColour(null, this.validate5), 'COLOUR')
             .appendField(new Blockly.FieldColour(null, this.validate6), 'COLOUR')
+        this.appendDummyInput("ROW")
+            .appendField(new Blockly.FieldColour(null, this.validate6), 'COLOUR')
         this.setColour(10);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
