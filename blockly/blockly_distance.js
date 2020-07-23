@@ -20,8 +20,8 @@ Blockly.Blocks.get_distance = {
             .appendField('GET Distance')
             .appendField(new Blockly.FieldDropdown([
                 ['LEFT', "0"],
-                ['CENTER', "2"],
-                ['RIGHT', "1"]
+                ['CENTER', "1"],
+                ['RIGHT', "2"]
             ], this.validate), "distance_sensor")
         this.setColour(180);
         this.setOutput(true, 'Number')

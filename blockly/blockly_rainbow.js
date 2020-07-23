@@ -69,9 +69,9 @@ Blockly.Blocks.rainbow_single_led = {
 
 Blockly.JavaScript.rainbow_single_led = function(block) {
     let led = Blockly.JavaScript.valueToCode(this, 'led', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
-    console.log(`hexColor : ${hexColor}`)
+    let hexColor = block.getFieldValue('COLOUR')
     let rgb = hexToRgb(hexColor);
-    
+    console.log(`hexColor = ${hexColor} rgb = ${rgb}`)
     let red = rgb.r;
     let green = rgb.g;
     let blue = rgb.b;
@@ -174,6 +174,9 @@ Blockly.JavaScript.rainbow_set_effect = function(block) {
     }
     else {
         type = block.getFieldValue("turnType")
+        if(typeof(type) == "string") {
+            type = 0;
+        }
     }
     return `rainbow_set_effect(${type}, ${delaySec})\n`;
 }

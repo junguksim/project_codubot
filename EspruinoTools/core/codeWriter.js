@@ -66,6 +66,7 @@
             if (callback) callback();
           }
         }, 100);
+        Espruino.Core.Terminal.addNotification("Upload Complete!");
       });
     });
   };

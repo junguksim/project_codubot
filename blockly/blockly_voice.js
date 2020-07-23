@@ -29,7 +29,7 @@ function makeDropDownArray(count, start) {
 }
 let voiceValid = false;
 let play_sound_arr = makeDropDownArray(28);
-let untilDone = false;
+let untilDoneValid = false;
 play_sound_arr.splice(0, 1);
 Blockly.Blocks.play_sound = {
     category: 'voice_module',
@@ -48,8 +48,7 @@ Blockly.Blocks.play_sound = {
         voiceValid = true;
     },
     validate2 : function(newValue) {
-        untilDone = newValue;
-        console.log(`untilDone = ${untilDone}\n`);
+        untilDoneValid = true;
     }
 }
 Blockly.JavaScript.play_sound = function (block) {

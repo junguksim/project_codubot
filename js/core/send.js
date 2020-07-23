@@ -29,6 +29,7 @@
             Espruino.Core.Terminal.focus(); // give the terminal focus
           Espruino.callProcessor("sending");
           Espruino.Core.Code.getEspruinoCode(Espruino.Core.CodeWriter.writeToEspruino);
+          
         });
       }
     });

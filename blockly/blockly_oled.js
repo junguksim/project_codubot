@@ -1,5 +1,5 @@
 Blockly.Blocks.oled_ready = {
-    category: 'oled_sensor',
+    category: 'oled_module',
     init: function () {
         this.appendDummyInput()
             .appendField('OLED Module Begins');
@@ -16,7 +16,7 @@ Blockly.JavaScript.oled_ready = function () {
 
 let oledValid = false;
 Blockly.Blocks.oled_face = {
-    category: 'oled_sensor',
+    category: 'oled_module',
     init: function () {
         this.appendDummyInput()
             .appendField('Draw Image')
@@ -28,7 +28,7 @@ Blockly.Blocks.oled_face = {
                 ['SLEEPY', "4"],
                 ['HAPPY', "5"],
                 ['SAD', "6"]
-            ], this.validate), "oled_sensor")
+            ], this.validate), "oled_module")
         this.setColour(180);
         this.setNextStatement(true);
         this.setPreviousStatement(true);
@@ -44,7 +44,7 @@ Blockly.JavaScript.oled_face = function (block) {
         oledVal = "0"
     }
     else {
-        oledVal = block.getFieldValue("oled_sensor");
+        oledVal = block.getFieldValue("oled_module");
     }
-    return `oled_face(${oledVal})`;
+    return `oled_face(${oledVal});\n`;
 }

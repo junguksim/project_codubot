@@ -167,6 +167,7 @@
     });
   }
   function sendUploadedCode() {
+    
     Espruino.Core.MenuPortSelector.ensureConnected(function() {
       Espruino.callProcessor("sending");
       Espruino.callProcessor("transformForEspruino", uploadCode, function(code) {

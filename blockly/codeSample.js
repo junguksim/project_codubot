@@ -109,46 +109,46 @@ function robot_move_angle_no_time(dir, vel, angle) {
 
 function set_brightness(brightness) {
   i2c.writeTo(0x10, [0x02, 1, brightness, (1 + brightness) & 0xFF]);
-}
+};
 
 function print_single_dot(dot, red, green, blue) {
   i2c.writeTo(0x10, [0x02, 2, dot, red, green, blue, (2 + dot + red + green + blue) & 0xFF]);
-}
+};
 
 function print_single_line(line, rgb_array) {
   var sum_rgb_array = 0;
   for(var i = 0 ; i < 7 ; i++) {
-    let sum = rgb_array[i].reduce((a, b) => a + b, 0);
-    console.log(sum)
-    sum_rgb_array = (sum_rgb_array + sum) & 0xFF;
+    for(var j = 0 ; j < 3; j++) {
+      sum_rgb_array += rgb_array[i][j];
+    }
   }
   i2c.writeTo(0x10, [0x02, 3, line, rgb_array, (3 + line + sum_rgb_array) & 0xFF]);
-}
+};
 
 function save_single_dot(dot, red, green, blue) {
   i2c.writeTo(0x10, [0x02, 4, dot, red, green, blue, (4 + dot + red + green + blue) & 0xFF]);
-}
+};
 
 function save_single_line(line, rgb_array) {
   var sum_rgb_array = 0;
   for(var i = 0 ; i < 7 ; i++) {
-    let sum = rgb_array[i].reduce((a, b) => a + b, 0);
-    console.log(sum)
-    sum_rgb_array = (sum_rgb_array + sum) & 0xFF;
+    for(var j = 0 ; j < 3; j++) {
+      sum_rgb_array += rgb_array[i][j];
+    }
   }
   i2c.writeTo(0x10, [0x02, 5, line, rgb_array, (5 + line + sum_rgb_array) & 0xFF]);
-}
+};
 
 function update_dot_matrix() {
   i2c.writeTo(0x10, [0x02, 6, (6) & 0xFF]);
-}
+};
 
 function print_every_line(rgb_array) {
   for(var i = 0 ; i < 7 ; i++) {
     save_single_line(i, [rgb_array[(i * 7) + 0], rgb_array[(i * 7) + 1], rgb_array[(i * 7) + 2], rgb_array[(i * 7) + 3], rgb_array[(i * 7) + 4], rgb_array[(i * 7) + 5], rgb_array[(i * 7) + 6]]);
   }
   update_dot_matrix();
-}
+};
 
 function clear_dot_matrix() {
   print_every_line([[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
@@ -158,28 +158,30 @@ function clear_dot_matrix() {
                     [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
                     [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 
                     [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]);
-}
+};
 
 function set_string_color(rgb_array) {
   i2c.writeTo(0x10, [0x02, 7, [rgb_array[0], rgb_array[1], rgb_array[2]], (7 + rgb_array[0] + rgb_array[1] + rgb_array[2]) & 0xFF]);
-}
+};
 
 function print_string(string_array) {
   var ascii_array = [];
   var ascii_array_sum = 0;
   var this_ascii = 0;
-  for(var i = 0 ; i < ((string_array.length > 20) ? 20 : string_array.length) ; i++)
-  {
-    if((string_array[i].charCodeAt(0) >= 32) && (string_array[i].charCodeAt(0) <= 126))
+  for(var i = 0 ; i < ((string_array.length > 20) ? 20 : string_array.length) ; i++) {
+    if((string_array[i].charCodeAt(0) >= 32) && (string_array[i].charCodeAt(0) <= 126)) {
       this_ascii = string_array[i].charCodeAt(0);
-    else
+    }
+    else {
       this_ascii = 63; // "?"
+    }
     ascii_array.push(this_ascii);
     ascii_array_sum = ascii_array_sum + this_ascii;
   }
   i2c.writeTo(0x10, [0x02, 8, ((string_array.length > 20) ? 20 : string_array.length), ascii_array, (8 + ((string_array.length > 20) ? 20 : string_array.length) + ascii_array_sum) & 0xFF]);
-}
+};
 
+//* default
 var i2c = new I2C();
 i2c.setup({scl: D27, sda: D26, bitrate: 400000});
 
@@ -196,7 +198,7 @@ var ir_adc_loop = setInterval(function() {
 
 
 var FORWARD = 0; var BACKWARD = 1; var LEFT = 2; var RIGHT = 3;
-var DIST_TO_ANGLE = 33.52; // 1 cm = 33.52 deg, // 10.74 cm = 360 deg
+var DIST_TO_ANGLE = 33.216; // 1 cm = 33.52 deg, // 10.74 cm = 360 deg
 var ROBOT_ANGLE_TO_WHEEL_ANGLE = 2.242; // Robot 360 deg = Wheel 2.242 * 360 deg 
 var codubot_velocity = 50;
 
@@ -268,8 +270,8 @@ function oled_face(number) {
 }
 
 //* 보이스 모듈
-// i2c.writeTo(0x0D, [1, 1]);
-// i2c.writeTo(0x0D, [15]);
+i2c.writeTo(0x0D, [1, 1]);
+i2c.writeTo(0x0D, [15]);
 var temp_mp3 = i2c.readFrom(0x0D, 1);
 var max_number_mp3 = temp_mp3[0];
 
@@ -306,6 +308,10 @@ function change_volume_by_number(number) {
       i2c.writeTo(0x0D, [0x02, 68, (68) & 0xFF]);
   }
 };
+
+function play_until_done(number) {
+  play_sound(number); i2c.writeTo(0x0D, [1, 1]);  i2c.writeTo(0x0D, [12]); while(i2c.readFrom(0x0D, 1) == 0); while(i2c.readFrom(0x0D, 1) == 1);
+}
 
 // * 레인보우
 var RAINBOW_CW = 0;

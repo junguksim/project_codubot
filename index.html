@@ -437,11 +437,15 @@
       function LEDMatrix() {
         var _ledmatrix_ = $("<div>");
         _ledmatrix_.attr('id', 'ledmatrix');
+        
         if ($('#LEDMatrix').css('display') == 'none') {
           //$('#sidebar').hide();
           $('#console').hide();
           $('#LEDMatrix').show();
-          Espruino.Core.Terminal.typeCharacters(`var i2c = new I2C();\ni2c.setup({scl: D27, sda: D26, bitrate: 400000});\n`);
+          var start_led = `var i2c = new I2C();\ni2c.setup({scl: D27, sda: D26, bitrate: 400000});function print_string(string_array){var ascii_array=[];var ascii_array_sum=0;var this_ascii=0;for(var i=0;i<((string_array.length>20)?20:string_array.length);i++){if((string_array[i].charCodeAt(0)>=32)&&(string_array[i].charCodeAt(0)<=126)){this_ascii=string_array[i].charCodeAt(0)}else{this_ascii=63}ascii_array.push(this_ascii);ascii_array_sum=ascii_array_sum+this_ascii}i2c.writeTo(0x10,[0x02,8,((string_array.length>20)?20:string_array.length),ascii_array,(8+((string_array.length>20)?20:string_array.length)+ascii_array_sum)&0xFF])};\n`
+          Espruino.Core.CodeWriter.writeToEspruino(start_led, function() {
+            Espruino.Core.Terminal.addNotification("Start Led Complete!");
+          });
           _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'turn_on_led()', value: 'led 켜기', style: "width : 30px, height : 30px" }))
           _ledmatrix_.append($('<br/>'));
           _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'turn_off_all()', value: '모두 끄기', style: "width : 30px, height : 30px" }))
@@ -732,6 +736,7 @@
       }
 
       function turn_on_led() {
+        
         for (var i = 0; i < matrixArr.length; i++) {
           let checked = $(`input:checkbox[id=cb${i}]`).is(":checked")
           console.log(i, checked);
@@ -758,8 +763,9 @@
           $(aai).prop('checked', false);
           $(aa).css('background-color', '#ffffff');
           $(aa).data('led', null);
-          Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x10, [0x02, 2, ${i}, 0, 0, 0, (2 + ${i} + 0 + 0 +  0) & 0xFF]);\n`)
+          
         }
+        Espruino.Core.Terminal.typeCharacters(`print_string(" ")\n`)
       }
       function setColor(el) {
         let hexColor = pickedHexColor;
@@ -949,9 +955,12 @@
         // }
         // tableCell.append(ledmatrix__);
         // tableRow.append(tableCell)
+
+        Espruino.Core.Terminal.typeCharacters(`var settingsCnt = ${settingsCnt};\nvar matrixArr_=[${matrixArr_}]\n`);
         $("#savedLedSettings").append(ledmatrix__)
         ledmatrix__ = $("<div>");
-
+        console.log('==================matrixArr_=================');
+        console.log(matrixArr_);
         turn_off_all();
       }
       function load_led(cnt) {

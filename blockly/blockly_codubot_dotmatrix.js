@@ -10,7 +10,7 @@ Blockly.Blocks.dot_matrix_ready = {
 }
 
 Blockly.JavaScript.dot_matrix_ready = function () {
- return "function set_brightness(brightness){i2c.writeTo(0x10,[0x02,1,brightness,(1+brightness)&0xFF])}function print_single_dot(dot,red,green,blue){i2c.writeTo(0x10,[0x02,2,dot,red,green,blue,(2+dot+red+green+blue)&0xFF])}function print_single_line(line,rgb_array){var sum_rgb_array=0;for(var i=0;i<7;i++){let sum=rgb_array[i].reduce((a,b)=>a+b,0);console.log(sum)sum_rgb_array=(sum_rgb_array+sum)&0xFF}i2c.writeTo(0x10,[0x02,3,line,rgb_array,(3+line+sum_rgb_array)&0xFF])}function save_single_dot(dot,red,green,blue){i2c.writeTo(0x10,[0x02,4,dot,red,green,blue,(4+dot+red+green+blue)&0xFF])}function save_single_line(line,rgb_array){var sum_rgb_array=0;for(var i=0;i<7;i++){let sum=rgb_array[i].reduce((a,b)=>a+b,0);console.log(sum)sum_rgb_array=(sum_rgb_array+sum)&0xFF}i2c.writeTo(0x10,[0x02,5,line,rgb_array,(5+line+sum_rgb_array)&0xFF])}function update_dot_matrix(){i2c.writeTo(0x10,[0x02,6,(6)&0xFF])}function print_every_line(rgb_array){for(var i=0;i<7;i++){save_single_line(i,[rgb_array[(i*7)+0],rgb_array[(i*7)+1],rgb_array[(i*7)+2],rgb_array[(i*7)+3],rgb_array[(i*7)+4],rgb_array[(i*7)+5],rgb_array[(i*7)+6]])}update_dot_matrix()}function clear_dot_matrix(){print_every_line([[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]])}function set_string_color(rgb_array){i2c.writeTo(0x10,[0x02,7,[rgb_array[0],rgb_array[1],rgb_array[2]],(7+rgb_array[0]+rgb_array[1]+rgb_array[2])&0xFF])}function print_string(string_array){var ascii_array=[];var ascii_array_sum=0;var this_ascii=0;for(var i=0;i<((string_array.length>20)?20:string_array.length);i++){if((string_array[i].charCodeAt(0)>=32)&&(string_array[i].charCodeAt(0)<=126))this_ascii=string_array[i].charCodeAt(0);else this_ascii=63;ascii_array.push(this_ascii);ascii_array_sum=ascii_array_sum+this_ascii}i2c.writeTo(0x10,[0x02,8,((string_array.length>20)?20:string_array.length),ascii_array,(8+((string_array.length>20)?20:string_array.length)+ascii_array_sum)&0xFF])}\n"
+    return "function set_brightness(brightness){i2c.writeTo(0x10,[0x02,1,brightness,(1+brightness)&0xFF])};function print_single_dot(dot,red,green,blue){i2c.writeTo(0x10,[0x02,2,dot,red,green,blue,(2+dot+red+green+blue)&0xFF])};function print_single_line(line,rgb_array){var sum_rgb_array=0;for(var i=0;i<7;i++){for(var j=0;j<3;j++){sum_rgb_array+=rgb_array[i][j]}}i2c.writeTo(0x10,[0x02,3,line,rgb_array,(3+line+sum_rgb_array)&0xFF])};function save_single_dot(dot,red,green,blue){i2c.writeTo(0x10,[0x02,4,dot,red,green,blue,(4+dot+red+green+blue)&0xFF])};function save_single_line(line,rgb_array){var sum_rgb_array=0;for(var i=0;i<7;i++){for(var j=0;j<3;j++){sum_rgb_array+=rgb_array[i][j]}}i2c.writeTo(0x10,[0x02,5,line,rgb_array,(5+line+sum_rgb_array)&0xFF])};function update_dot_matrix(){i2c.writeTo(0x10,[0x02,6,(6)&0xFF])};function print_every_line(rgb_array){for(var i=0;i<7;i++){save_single_line(i,[rgb_array[(i*7)+0],rgb_array[(i*7)+1],rgb_array[(i*7)+2],rgb_array[(i*7)+3],rgb_array[(i*7)+4],rgb_array[(i*7)+5],rgb_array[(i*7)+6]])}update_dot_matrix()};function clear_dot_matrix(){print_every_line([[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]])};function set_string_color(rgb_array){i2c.writeTo(0x10,[0x02,7,[rgb_array[0],rgb_array[1],rgb_array[2]],(7+rgb_array[0]+rgb_array[1]+rgb_array[2])&0xFF])};function print_string(string_array){var ascii_array=[];var ascii_array_sum=0;var this_ascii=0;for(var i=0;i<((string_array.length>20)?20:string_array.length);i++){if((string_array[i].charCodeAt(0)>=32)&&(string_array[i].charCodeAt(0)<=126)){this_ascii=string_array[i].charCodeAt(0)}else{this_ascii=63}ascii_array.push(this_ascii);ascii_array_sum=ascii_array_sum+this_ascii}i2c.writeTo(0x10,[0x02,8,((string_array.length>20)?20:string_array.length),ascii_array,(8+((string_array.length>20)?20:string_array.length)+ascii_array_sum)&0xFF])};\n"
 }
 
 Blockly.Blocks.clear_screen = {
@@ -25,7 +25,7 @@ Blockly.Blocks.clear_screen = {
 }
 
 Blockly.JavaScript.clear_screen = function () {
-    return "clean_dot_matrix();\n";
+    return "clear_dot_matrix();\n";
 }
 
 Blockly.Blocks.set_brightness = {
@@ -49,7 +49,7 @@ Blockly.JavaScript.set_brightness = function () {
 // Blockly.Blocks['led_matrix'] = {
 //     category : "Dot Matrix",
 //     init : function() {
-        
+
 //         this.setColour(10);
 //         this.setPreviousStatement(true);
 //         this.setNextStatement(true);
@@ -87,8 +87,8 @@ function hexToRgb(hexType) {
     var b = parseInt(value[2], 16);
 
     return { r, g, b }
-  }
-  let hexColor = "";
+}
+let hexColor = "";
 Blockly.Blocks.draw_single_led = {
     category: 'Dot Matrix',
     init: function () {
@@ -104,7 +104,7 @@ Blockly.Blocks.draw_single_led = {
         this.setNextStatement(true);
         this.setInputsInline(true);
     },
-    validate : function(newValue) {
+    validate: function (newValue) {
         hexColor = newValue;
     }
 }
@@ -113,23 +113,96 @@ Blockly.JavaScript.draw_single_led = function () {
     let dot = Blockly.JavaScript.valueToCode(this, 'dot', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
     console.log(`hexColor : ${hexColor}`)
     let rgb = hexToRgb(hexColor);
-    
+
     let red = rgb.r;
     let green = rgb.g;
     let blue = rgb.b;
     console.log(`dot is ${dot}, red = ${red} green = ${green} blue = ${blue}`)
     return `print_single_dot(${dot}, ${red}, ${green}, ${blue});\n`
 }
-let rgb_array = new Array(7);
+let rgb_array_single = new Array(3);
+Blockly.Blocks.print_string = {
+    category: 'Dot Matrix',
+    init: function () {
+        this.appendDummyInput()
+            .appendField('Draw Text');
+        this.appendValueInput('str')
+            .setCheck(["String"])
+        this.appendDummyInput()
+            .appendField('Color');
+        this.appendDummyInput()
+            .appendField(new Blockly.FieldColour(null, this.validate), 'COLOUR')
+        this.setColour(10);
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setInputsInline(true);
+    },
+    validate: function (newValue) {
+        let rgb = hexToRgb(newValue);
+        rgb_array_single = [rgb.r, rgb.g, rgb.b];
+    }
+}
+Blockly.JavaScript.print_string = function () {
+    let str = Blockly.JavaScript.valueToCode(this, 'str', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
+    let rgb_str = threeSplit(rgb_array_single.toString());
+    return `set_string_color(${rgb_str});\nprint_string(${str});\n`;
+}
+let imageValid = false;
+Blockly.Blocks.draw_image = {
+    category: 'Dot Matrix',
+    init: function () {
+        this.appendDummyInput()
+            .appendField('Draw Image');
+        this.appendValueInput('imageNum')
+            .setCheck(["Number"])
+        this.appendDummyInput()
+            .appendField(new Blockly.FieldDropdown([
+                ['#0', 0],
+                ['#1', 1]
+            ], this.validate), "imageSelect")
+        this.setColour(10);
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setInputsInline(true);
+    },
+    validate: function (newValue) {
+        imageValid = true;
+    }
+}
+
+Blockly.JavaScript.draw_image = function () {
+    let img = 0;
+    if (imageValid === false) {
+        img = 0;
+    }
+    else {
+        img = block.getFieldValue("imageSelect")
+        if (typeof (img) == "string") {
+            img = 0;
+        }
+    }
+    return `print_every_line(matrixArr_[${img}])`;
+}
+let rgb_array_total = new Array(7);
 let rgbStr = "";
 let color = new Array(3);
+let rgb_array = new Array(7);
+let lineValid = false;
 Blockly.Blocks.draw_single_line = {
     category: 'Dot Matrix',
     init: function () {
         this.appendDummyInput()
             .appendField('Draw Line');
-        this.appendValueInput('line')
-            .setCheck(["Number"])
+        this.appendDummyInput()
+            .appendField(new Blockly.FieldDropdown([
+                ['#0', 0],
+                ['#1', 1],
+                ['#2', 2],
+                ['#3', 3],
+                ['#4', 4],
+                ['#5', 5],
+                ['#6', 6],
+            ], this.validate), "whichLine")
         this.appendDummyInput()
             .appendField("Color : ")
             .appendField(new Blockly.FieldColour(null, this.validate0), 'COLOUR')
@@ -139,44 +212,50 @@ Blockly.Blocks.draw_single_line = {
             .appendField(new Blockly.FieldColour(null, this.validate4), 'COLOUR')
             .appendField(new Blockly.FieldColour(null, this.validate5), 'COLOUR')
             .appendField(new Blockly.FieldColour(null, this.validate6), 'COLOUR')
-        this.appendDummyInput("ROW")
-            .appendField(new Blockly.FieldColour(null, this.validate6), 'COLOUR')
         this.setColour(10);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setInputsInline(true);
     },
-    validate0 : function(newValue0) {
+    validate : function(newValue) {
+        lineValid = true;
+        console.log(lineValid)
+    },
+    validate0: function (newValue0) {
         let rgb = hexToRgb(newValue0);
+        if(lineValid == true) {
+            var line = Blockly.Blocks["draw_single_line"].getFieldValue('whichLine');
+            console.log(line);
+        }
         rgb_array[0] = [rgb.r, rgb.g, rgb.b];
         //rgbStr += (rgb.r+" "+rgb.g+" "+rgb.b+" ")
     },
-    validate1 : function(newValue1) {
+    validate1: function (newValue1) {
         let rgb = hexToRgb(newValue1);
         rgb_array[1] = [rgb.r, rgb.g, rgb.b];
         //rgbStr += (rgb.r+" "+rgb.g+" "+rgb.b+" ")
     },
-    validate2 : function(newValue2) {
+    validate2: function (newValue2) {
         let rgb = hexToRgb(newValue2);
         rgb_array[2] = [rgb.r, rgb.g, rgb.b];
         //rgbStr += (rgb.r+" "+rgb.g+" "+rgb.b+" ")
     },
-    validate3 : function(newValue3) {
+    validate3: function (newValue3) {
         let rgb = hexToRgb(newValue3);
         rgb_array[3] = [rgb.r, rgb.g, rgb.b];
         //rgbStr += (rgb.r+" "+rgb.g+" "+rgb.b+" ")
     },
-    validate4 : function(newValue4) {
+    validate4: function (newValue4) {
         let rgb = hexToRgb(newValue4);
         rgb_array[4] = [rgb.r, rgb.g, rgb.b];
         //rgbStr += (rgb.r+" "+rgb.g+" "+rgb.b+" ")
     },
-    validate5 : function(newValue5) {
+    validate5: function (newValue5) {
         let rgb = hexToRgb(newValue5);
         rgb_array[5] = [rgb.r, rgb.g, rgb.b];
         //rgbStr += (rgb.r+" "+rgb.g+" "+rgb.b+" ")
     },
-    validate6 : function(newValue6) {
+    validate6: function (newValue6) {
         let rgb = hexToRgb(newValue6);
         rgb_array[6] = [rgb.r, rgb.g, rgb.b];
         //rgbStr += (rgb.r+" "+rgb.g+" "+rgb.b+" ")
@@ -184,18 +263,17 @@ Blockly.Blocks.draw_single_line = {
 }
 function threeSplit(str) {
     str = str.split(',');
-    let newArr ="";
+    let newArr = "";
     let str_ = "";
-    for(var i = 0 ; i < str.length; i++) {
-        if((i+1) % 3 == 0) {
+    for (var i = 0; i < str.length; i++) {
+        if ((i + 1) % 3 == 0) {
             str_ += str[i];
-            str_ = "["+str_;
-            if(i == str.length-1) {
+            str_ = "[" + str_;
+            if (i == str.length - 1) {
                 str_ = str_ + "]";
             }
             else {
-                str_ = str_+"],";
-               
+                str_ = str_ + "],";
             }
             newArr += str_;
             str_ = "";
@@ -208,13 +286,14 @@ function threeSplit(str) {
     console.log(newArr);
     return newArr;
 }
-Blockly.JavaScript.draw_single_line = function() {
+Blockly.JavaScript.draw_single_line = function () {
     let line = Blockly.JavaScript.valueToCode(this, 'line', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
     //console.log(`line is ${line}`);
     //rgbStr+=line;
-    rgb_str = rgb_array.toString();
+    rgb_array_total[line] = rgb_array;
+    rgb_str = rgb_array_total[line].toString();
     console.log("before split : " + rgb_str);
     rgb_str = threeSplit(rgb_str);
     console.log(rgb_str)
-    return `print_single_line(${line}, [${rgb_str}])`;
+    return `print_single_line(${line}, [${rgb_str}]);\n`;
 }
