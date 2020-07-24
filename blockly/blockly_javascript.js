@@ -48,5 +48,5 @@ Blockly.Blocks.console_log = {
 
 Blockly.JavaScript.console_log = function () {
   let code = Blockly.JavaScript.valueToCode(this, 'code', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
-  return `console.log(${code})`;
+  return `console.log(${code});\n`;
 }

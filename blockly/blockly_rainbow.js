@@ -146,10 +146,10 @@ Blockly.Blocks.rainbow_set_effect = {
         this.appendDummyInput()
             .appendField('Set Effect ')
             .appendField(new Blockly.FieldDropdown([
-                ['Turn cw', 0],
-                ['Turn ccw', 1],
-                ['LED cw', 2],
-                ['LED ccw', 3]
+                ['Turn cw', '0'],
+                ['Turn ccw', '1'],
+                ['LED cw', '2'],
+                ['LED ccw', '3']
             ],this.validate), "turnType")
         this.appendDummyInput()
             .appendField(',delay')

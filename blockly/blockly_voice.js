@@ -6,7 +6,7 @@ Blockly.Blocks.voice_ready = {
         this.setColour(45);
         this.setNextStatement(true);
         this.setPreviousStatement(true);
-        
+
     }
 }
 Blockly.JavaScript.voice_ready = function () {
@@ -15,15 +15,15 @@ Blockly.JavaScript.voice_ready = function () {
 
 function makeDropDownArray(count, start) {
     var start_ = 0;
-    if(start !== undefined) {
+    if (start !== undefined) {
         start_ = start;
     }
     let arr = [];
-    for(var i = start_ ; i <= count; i++) {
+    for (var i = start_; i <= count; i++) {
         let arr_ = new Array(2);
         arr_.fill(i.toString());
         arr.push(arr_);
-        arr_=[];
+        arr_ = [];
     }
     return arr;
 }
@@ -44,22 +44,31 @@ Blockly.Blocks.play_sound = {
         this.setPreviousStatement(true);
         this.setInputsInline(true);
     },
-    validate : function () {
+    validate: function () {
         voiceValid = true;
     },
-    validate2 : function(newValue) {
+    validate2: function (newValue) {
         untilDoneValid = true;
     }
 }
 Blockly.JavaScript.play_sound = function (block) {
-    let soundVal ="0";
-    if(voiceValid == false) {
+    let soundVal = "0";
+    if (voiceValid == false) {
         soundVal = "0"
     }
     else {
         soundVal = block.getFieldValue("sound_num");
     }
-    return `play_sound(${soundVal})`;
+    untilDoneValid = block.getFieldValue("untilDone");
+    if (untilDoneValid == true) {
+        return `play_sound(${soundVal});\n
+            i2c.writeTo(0x0D, [1, 1]);\n
+            i2c.writeTo(0x0D, [12]); while(i2c.readFrom(0x0D, 1) == 0);\n
+            while(i2c.readFrom(0x0D, 1) == 1);\n`
+    }
+    else {
+        return `play_sound(${soundVal});\n`;
+    }
 }
 
 Blockly.Blocks.stop_sound = {
@@ -91,21 +100,21 @@ Blockly.Blocks.change_volume_by_ratio = {
         this.setNextStatement(true);
         this.setInputsInline(true);
     },
-    validate : function () {
+    validate: function () {
         changeRatioValid = true;
     }
 }
 
 Blockly.JavaScript.change_volume_by_ratio = function (block) {
-    let changeVal ="0";
-    if(changeRatioValid == false) {
+    let changeVal = "0";
+    if (changeRatioValid == false) {
         changeVal = "0"
     }
     else {
         changeVal = block.getFieldValue("change_ratio_num");
     }
     console.log(changeVal)
-    return `change_volume_by_ratio(${changeVal})`;
+    return `change_volume_by_ratio(${changeVal});\n`;
 }
 
 let changeNumValid = false;
@@ -120,18 +129,18 @@ Blockly.Blocks.change_volume_by_number = {
         this.setNextStatement(true);
         this.setInputsInline(true);
     },
-    validate : function () {
+    validate: function () {
         changeNumValid = true;
     }
 }
 
 Blockly.JavaScript.change_volume_by_number = function (block) {
-    let changeVal ="0";
-    if(changeNumValid == false) {
+    let changeVal = "0";
+    if (changeNumValid == false) {
         changeVal = "0"
     }
     else {
         changeVal = block.getFieldValue("change_by_num");
     }
-    return `change_volume_by_number(${changeVal})`;
+    return `change_volume_by_number(${changeVal});\n`;
 }

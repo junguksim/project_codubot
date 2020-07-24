@@ -157,8 +157,8 @@ Blockly.Blocks.draw_image = {
             .setCheck(["Number"])
         this.appendDummyInput()
             .appendField(new Blockly.FieldDropdown([
-                ['#0', 0],
-                ['#1', 1]
+                ['#0', "0"],
+                ['#1', '1']
             ], this.validate), "imageSelect")
         this.setColour(10);
         this.setPreviousStatement(true);
@@ -196,13 +196,13 @@ Blockly.Blocks.draw_single_line = {
             .appendField('Draw Line');
         this.appendDummyInput()
             .appendField(new Blockly.FieldDropdown([
-                ['#0', 0],
-                ['#1', 1],
-                ['#2', 2],
-                ['#3', 3],
-                ['#4', 4],
-                ['#5', 5],
-                ['#6', 6],
+                ['#0', '0'],
+                ['#1', '1'],
+                ['#2', '2'],
+                ['#3', '3'],
+                ['#4', '4'],
+                ['#5', '5'],
+                ['#6', '6'],
             ], this.validate), "whichLine")
         this.appendDummyInput()
             .appendField("Color : ")
