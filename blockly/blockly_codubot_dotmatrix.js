@@ -288,9 +288,6 @@ Blockly.JavaScript.draw_single_line = function (block) {
     }
     else {
         line = block.getFieldValue("whichLine");
-        if(typeof(line) == "string") {
-            line = 0;
-        }
     }
     console.log(`line = ${line}`)
     for(var i = 0 ; i < 7 ; i++) {
