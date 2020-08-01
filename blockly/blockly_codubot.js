@@ -32,7 +32,7 @@ Blockly.JavaScript.set_velocity = function () {
     let velocity = Blockly.JavaScript.valueToCode(this, 'velocity', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
     return `codubot_velocity = ${velocity};\n`;
 }
-let distValid = false;
+//let distValid = false;
 Blockly.Blocks.robot_move_dist = {
     category : 'CoduBot',
     init : function() {
@@ -41,7 +41,7 @@ Blockly.Blocks.robot_move_dist = {
             .appendField(new Blockly.FieldDropdown([
                 ['Forward', "0"],
                 ['Backward', "1"]
-            ], this.validate), "distDir")
+            ]), "distDir")
         this.appendDummyInput()
             .appendField('to ')
         this.appendValueInput('dist_cm')
@@ -53,19 +53,12 @@ Blockly.Blocks.robot_move_dist = {
         this.setInputsInline(true);
         this.setPreviousStatement(true);
     },
-    validate : function(newValue) {
-        distValid = true;
-    }
 }
 
 Blockly.JavaScript.robot_move_dist = function(block) {
     let dist_cm = Blockly.JavaScript.valueToCode(this, 'dist_cm', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
-    if(distValid === false) {
-        dir = 0;
-    }
-    else {
-        dir = block.getFieldValue("distDir")
-    }
+    var dir = block.getFieldValue("distDir");
+    if(dir == undefined) dir = 0;
     return `robot_move_dist(${dir}, codubot_velocity, ${dist_cm}, true)\n`;
 }
 let turnValid = false;
@@ -75,9 +68,9 @@ Blockly.Blocks.robot_turn = {
         this.appendDummyInput()
             .appendField('Turn ')
             .appendField(new Blockly.FieldDropdown([
-                ['Left', "0"],
-                ['Right', "1"]
-            ],this.validate), "turnDir")
+                ['Left', "2"],
+                ['Right', "3"]
+            ]), "turnDir")
         this.appendDummyInput()
             .appendField('to ')
         this.appendValueInput('angle')
@@ -89,29 +82,14 @@ Blockly.Blocks.robot_turn = {
         this.setInputsInline(true);
         this.setPreviousStatement(true);
     },
-    validate : function(newValue) {
-        turnValid = true;
-    }
 }
 
 Blockly.JavaScript.robot_turn = function(block) {
     let angle = Blockly.JavaScript.valueToCode(this, 'angle', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
-    if(turnValid === false) {
-        dir = 2;
-    }
-    else {
-        dir = block.getFieldValue("turnDir")
-        if(dir == 0) {
-            dir = 2;
-        }
-        if(dir == 1) {
-            dir = 3;
-        }
-    }
-    return `robot_turn(${dir}, codubot_velocity, ${angle}, true);\n`;
+    var turnDir = block.getFieldValue("turnDir");
+    if(turnDir == undefined) dir = 2;
+    return `robot_turn(${turnDir}, codubot_velocity, ${angle}, true);\n`;
 }
-let motorTurnValid = false;
-let motorValid = false;
 Blockly.Blocks.motor_move_by_angle = {
     category : 'CoduBot',
     init : function() {
@@ -120,7 +98,7 @@ Blockly.Blocks.motor_move_by_angle = {
             .appendField(new Blockly.FieldDropdown([
                 ['Left motor', "0"],
                 ['Right motor', "1"]
-            ],this.validate), "turnMotor")
+            ]), "turnMotor")
         this.appendDummyInput()
             .appendField('to')
         this.appendValueInput('angle')
@@ -130,41 +108,23 @@ Blockly.Blocks.motor_move_by_angle = {
             .appendField(new Blockly.FieldDropdown([
                 ['CW', "0"],
                 ['CCW', "1"]
-            ],this.validateDir), "motorTurnDir")
+            ]), "motorTurnDir")
         this.setColour(200);
         this.setNextStatement(true);
         this.setInputsInline(true);
         this.setPreviousStatement(true);
-    },
-    validate : function(newValue) {
-        motorValid = true;
-    },
-    validateDir : function(newValue2) {
-        motorTurnValid = true;
     }
 }
 
 Blockly.JavaScript.motor_move_by_angle = function(block) {
     let angle = Blockly.JavaScript.valueToCode(this, 'angle', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
-    if(motorValid === false) {
-        motor = 0;
-    }
-    else {
-        motor = block.getFieldValue("turnMotor")
-    }
-    if(motorTurnValid === false) {
-        dir = 0;
-    }
-    else {
-        dir = block.getFieldValue("motorTurnDir")
-    }
-    console.log(`motor : ${motor}, dir : ${dir}\n===================================\n`);
-    console.log(`typeof motor : ${typeof(motor)}, typeof dir : ${typeof(dir)}\n`);
-    return `motor_move(${motor}, ${dir}, codubot_velocity, ${angle}, true)\n`;
+    let motor = block.getFieldValue("turnMotor")
+    if(motor == undefined) motor = 0;
+    let dir = block.getFieldValue("motorTurnDir")
+    if(dir == undefined) dir = 0;
+    return `motor_move(${motor}, ${dir}, codubot_velocity, ${angle}, true);\n`;
 }
 
-let motorTurnValid_ = false;
-let motorValid_ = false;
 Blockly.Blocks.motor_move_by_vel = {
     category : 'CoduBot',
     init : function() {
@@ -173,7 +133,7 @@ Blockly.Blocks.motor_move_by_vel = {
             .appendField(new Blockly.FieldDropdown([
                 ['Left motor', "0"],
                 ['Right motor', "1"]
-            ],this.validate_), "turnMotor_")
+            ]), "turnMotor")
         this.appendDummyInput()
             .appendField(',velocity')
         this.appendValueInput('vel')
@@ -183,38 +143,23 @@ Blockly.Blocks.motor_move_by_vel = {
             .appendField(new Blockly.FieldDropdown([
                 ['CW', "0"],
                 ['CCW', "1"]
-            ],this.validateDir_), "motorTurnDir_")
+            ]), "motorTurnDir")
         this.setColour(200);
         this.setNextStatement(true);
         this.setInputsInline(true);
         this.setPreviousStatement(true);
-    },
-    validate_ : function(newValue) {
-        motorValid_ = true;
-    },
-    validateDir_ : function(newValue2) {
-        motorTurnValid_ = true;
     }
 }
 
 Blockly.JavaScript.motor_move_by_vel = function(block) {
     let vel = Blockly.JavaScript.valueToCode(this, 'vel', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
-    if(motorValid_ === false) {
-        motor_ = 0;
-    }
-    else {
-        motor_ = block.getFieldValue("turnMotor_")
-    }
-    if(motorTurnValid_ === false) {
-        dir_ = 0;
-    }
-    else {
-        dir_ = block.getFieldValue("motorTurnDir_")
-    }
-    return `codubot_velocity=${vel};\nmotor_move(${motor_}, ${dir_}, ${vel}, 0, false);\n`;
+    let motor = block.getFieldValue("turnMotor")
+    if(motor == undefined) motor = 0;
+    let dir = block.getFieldValue("motorTurnDir")
+    if(dir == undefined) dir = 0;
+    return `codubot_velocity=${vel};\nmotor_move(${motor}, ${dir}, ${vel}, 0, false);\n`;
 }
 
-let motorValid__ = false;
 Blockly.Blocks.motor_stop = {
     category : 'CoduBot',
     init : function() {
@@ -223,27 +168,20 @@ Blockly.Blocks.motor_stop = {
             .appendField(new Blockly.FieldDropdown([
                 ['Left', "0"],
                 ['Right', "1"]
-            ],this.validate), "stopMotor")
+            ]), "stopMotor")
         this.appendDummyInput()
             .appendField('motor')
         this.setColour(200);
         this.setNextStatement(true);
         this.setInputsInline(true);
         this.setPreviousStatement(true);
-    },
-    validate : function(newValue) {
-        motorValid__ = true;
     }
 }
 
 Blockly.JavaScript.motor_stop = function(block) {
-    if(motorValid__ === false) {
-        motor__ = 0;
-    }
-    else {
-        motor__ = block.getFieldValue("stopMotor")
-    }
-    return `motor_stop(${motor__})\n`;
+    let motor = block.getFieldValue("stopMotor")
+    if(motor == undefined) motor = 0;
+    return `motor_stop(${motor})\n`;
 }
 
 
@@ -272,7 +210,7 @@ Blockly.Blocks.ir_sensor = {
                 ['#3', "2"],
                 ['#4', "3"],
                 ['#5', "4"]
-            ], this.validate), "ir_sensor")
+            ]), "ir_sensor")
         this.setColour(180);
         this.setOutput(true, 'Number')
         this.setInputsInline(true);
@@ -283,12 +221,8 @@ Blockly.Blocks.ir_sensor = {
 }
 Blockly.JavaScript.ir_sensor = function (block) {
     let irVal ="0";
-    if(irValid == false) {
-        irVal = "0"
-    }
-    else {
-        irVal = block.getFieldValue("ir_sensor");
-    }
+    irVal = block.getFieldValue("ir_sensor");
+    
     return [`ir_adc[${irVal}]`, Blockly.JavaScript.ORDER_ATOMIC];
 }
 
@@ -333,7 +267,6 @@ Blockly.JavaScript.buzzer_no_tone= function() {
 
 }
 
-let imuValid = false;
 Blockly.Blocks.imu_data = {
     category: 'CoduBot',
     init: function () {
@@ -342,22 +275,14 @@ Blockly.Blocks.imu_data = {
             .appendField(new Blockly.FieldDropdown([
                 ['acceleration', "forward_acc"],
                 ['angular velocity', "yaw_gyro"]
-            ], this.validate), "imu_sensor")
+            ]), "imu_sensor")
         this.setColour(180);
         this.setOutput(true, 'Number')
         this.setInputsInline(true);
-    },
-    validate : function () {
-        imuValid = true;
     }
 }
 Blockly.JavaScript.imu_data = function (block) {
     let imuVal ="forward_acc";
-    if(imuValid == false) {
-        imuVal = "forward_acc";
-    }
-    else {
-        imuVal = block.getFieldValue("imu_sensor");
-    }
+    imuVal = block.getFieldValue("imu_sensor");
     return [imuVal, Blockly.JavaScript.ORDER_ATOMIC];
 }

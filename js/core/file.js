@@ -48,10 +48,20 @@
         position: "top"
       },
       click: function() {
-        if (Espruino.Core.Code.isInBlockly())
-          saveFile(Espruino.Core.EditorBlockly.getXML(), currentXMLFileName);
-        else
-          saveFile(Espruino.Core.EditorJavaScript.getCode(), currentJSFileName);
+        var tt = new Date();
+        tt.setHours(tt.getHours() + 9);
+        tt = tt.toISOString().replace(/:/g,".");
+        tt = "code_" + window.prompt("save file name", tt);
+        if (Espruino.Core.Code.isInBlockly()) {
+          //saveFile(Espruino.Core.EditorBlockly.getXML(), currentXMLFileName);
+          tt += ".xml";
+          saveFile(Espruino.Core.EditorBlockly.getXML(), tt);
+        }
+        else {
+          //saveFile(Espruino.Core.EditorJavaScript.getCode(), currentJSFileName);
+          tt += ".js";
+          saveFile(Espruino.Core.EditorJavaScript.getCode(), tt);
+        }
       }
     });
   }

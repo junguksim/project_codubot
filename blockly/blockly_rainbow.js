@@ -174,9 +174,6 @@ Blockly.JavaScript.rainbow_set_effect = function(block) {
     }
     else {
         type = block.getFieldValue("turnType")
-        if(typeof(type) == "string") {
-            type = 0;
-        }
     }
     return `rainbow_set_effect(${type}, ${delaySec})\n`;
-}
+} 

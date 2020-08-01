@@ -74,7 +74,7 @@ Blockly.Blocks.get_radar = {
 Blockly.JavaScript.get_radar= function (block) {
     let teamVal_ = "0";
     let sensorVal = "0"
-    teamVal_ = false ? "0" : block.getFieldValue("team_dropdown_");
-    sensorValid = false ? "0" : block.getFieldValue("sensor_dropdown");
+    teamVal_= block.getFieldValue("team_dropdown_");
+    sensorVal = block.getFieldValue("sensor_dropdown");
     return [`ir_radar[${teamVal_*3} + ${sensorVal} + 2]`, Blockly.JavaScript.ORDER_ATOMIC];
 }
