@@ -28,7 +28,7 @@ Blockly.Blocks.oled_face = {
                 ['SLEEPY', "4"],
                 ['HAPPY', "5"],
                 ['SAD', "6"]
-            ], this.validate), "oled_module")
+            ]), "oled_module")
         this.setColour(180);
         this.setNextStatement(true);
         this.setPreviousStatement(true);
@@ -40,11 +40,6 @@ Blockly.Blocks.oled_face = {
 }
 Blockly.JavaScript.oled_face = function (block) {
     let oledVal ="0";
-    if(oledValid == false) {
-        oledVal = "0"
-    }
-    else {
-        oledVal = block.getFieldValue("oled_module");
-    }
+    oledVal = block.getFieldValue("oled_module");
     return `oled_face(${oledVal});\n`;
 }

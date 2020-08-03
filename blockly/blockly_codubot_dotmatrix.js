@@ -44,34 +44,12 @@ Blockly.Blocks.set_brightness = {
 
 Blockly.JavaScript.set_brightness = function () {
     let brightness = Blockly.JavaScript.valueToCode(this, 'brightness', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
-    return `set_brightness(${brightness})`
+    return `set_brightness(${brightness});\n`
 }
-// Blockly.Blocks['led_matrix'] = {
-//     category : "Dot Matrix",
-//     init : function() {
-
-//         this.setColour(10);
-//         this.setPreviousStatement(true);
-//         this.setNextStatement(true);
-//     }
-// }
-
-// Blockly.JavaScript.led_matrix = function (block) {
-//     let checkedStr = ""
-//     for(var i = 0 ; i < 49; i++) {
-//         let val = block.getFieldValue(`cb${i}`)
-//         if(val === 'TRUE') {
-//             val='checked,'
-//         }
-//         else {
-//             val='unchecked,'
-//         }
-//         checkedStr+=val;
-//     }
-//     return `led_matrix(${checkedStr})`;
-// }
 function hexToRgb(hexType) {
-
+    if(hexType == undefined) {
+        return {r : 0, g : 0, b : 0}
+    }
     var hex = hexType.replace("#", "");
     var value = hex.match(/[a-f\d]/gi);
     console.log(hex);
@@ -98,19 +76,17 @@ Blockly.Blocks.draw_single_led = {
             .setCheck(["Number"])
         this.appendDummyInput()
             .appendField("Color : ")
-            .appendField(new Blockly.FieldColour(null, this.validate), 'COLOUR');
+            .appendField(new Blockly.FieldColour(null, this.validate), 'single_led_color');
         this.setColour(10);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setInputsInline(true);
-    },
-    validate: function (newValue) {
-        hexColor = newValue;
     }
 }
 
-Blockly.JavaScript.draw_single_led = function () {
+Blockly.JavaScript.draw_single_led = function (block) {
     let dot = Blockly.JavaScript.valueToCode(this, 'dot', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
+    let hexColor = block.getFieldValue("single_led_color");
     console.log(`hexColor : ${hexColor}`)
     let rgb = hexToRgb(hexColor);
 
@@ -120,6 +96,7 @@ Blockly.JavaScript.draw_single_led = function () {
     console.log(`dot is ${dot}, red = ${red} green = ${green} blue = ${blue}`)
     return `print_single_dot(${dot}, ${red}, ${green}, ${blue});\n`
 }
+
 let rgb_array_single = new Array(3);
 Blockly.Blocks.print_string = {
     category: 'Dot Matrix',
@@ -131,23 +108,22 @@ Blockly.Blocks.print_string = {
         this.appendDummyInput()
             .appendField('Color');
         this.appendDummyInput()
-            .appendField(new Blockly.FieldColour(null, this.validate), 'COLOUR')
+            .appendField(new Blockly.FieldColour(null, this.validate), 'print_string_color')
         this.setColour(10);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setInputsInline(true);
-    },
-    validate: function (newValue) {
-        let rgb = hexToRgb(newValue);
-        rgb_array_single = [rgb.r, rgb.g, rgb.b];
     }
 }
-Blockly.JavaScript.print_string = function () {
+Blockly.JavaScript.print_string = function (block) {
     let str = Blockly.JavaScript.valueToCode(this, 'str', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
+    let hexColor = block.getFieldValue("print_string_color");
+    let rgb = hexToRgb(hexColor);
+    rgb_array_single = [rgb.r, rgb.b, rgb.b];
     let rgb_str = threeSplit(rgb_array_single.toString());
     return `set_string_color(${rgb_str});\nprint_string(${str});\n`;
 }
-let imageValid = false;
+// TODO : draw image
 Blockly.Blocks.draw_image = {
     category: 'Dot Matrix',
     init: function () {
@@ -159,36 +135,22 @@ Blockly.Blocks.draw_image = {
             .appendField(new Blockly.FieldDropdown([
                 ['#0', "0"],
                 ['#1', '1']
-            ], this.validate), "imageSelect")
+            ]), "imageSelect")
         this.setColour(10);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setInputsInline(true);
-    },
-    validate: function (newValue) {
-        imageValid = true;
     }
 }
 
 Blockly.JavaScript.draw_image = function () {
     let img = 0;
-    if (imageValid === false) {
-        img = 0;
-    }
-    else {
-        img = block.getFieldValue("imageSelect")
-        if (typeof (img) == "string") {
-            img = 0;
-        }
-    }
+    img = block.getFieldValue("imageSelect");
     return `print_every_line(matrixArr_[${img}])`;
 }
 let rgb_array_total = new Array(7);
 let rgbStr = "";
 let rgb_array = new Array(7);
-let rgb_valid_array = new Array(7);
-rgb_valid_array.fill(false);
-let lineValid = false;
 Blockly.Blocks.draw_single_line = {
     category: 'Dot Matrix',
     init: function () {
@@ -203,59 +165,21 @@ Blockly.Blocks.draw_single_line = {
                 ['#4', '4'],
                 ['#5', '5'],
                 ['#6', '6'],
-            ], this.validate), "whichLine")
+            ]), "whichLine")
         this.appendDummyInput()
             .appendField("Color : ")
-            .appendField(new Blockly.FieldColour(null, this.validate0), 'COLOUR0')
-            .appendField(new Blockly.FieldColour(null, this.validate1), 'COLOUR1')
-            .appendField(new Blockly.FieldColour(null, this.validate2), 'COLOUR2')
-            .appendField(new Blockly.FieldColour(null, this.validate3), 'COLOUR3')
-            .appendField(new Blockly.FieldColour(null, this.validate4), 'COLOUR4')
-            .appendField(new Blockly.FieldColour(null, this.validate5), 'COLOUR5')
-            .appendField(new Blockly.FieldColour(null, this.validate6), 'COLOUR6')
+            .appendField(new Blockly.FieldColour(null), 'line_color_0')
+            .appendField(new Blockly.FieldColour(null), 'line_color_1')
+            .appendField(new Blockly.FieldColour(null), 'line_color_2')
+            .appendField(new Blockly.FieldColour(null), 'line_color_3')
+            .appendField(new Blockly.FieldColour(null), 'line_color_4')
+            .appendField(new Blockly.FieldColour(null), 'line_color_5')
+            .appendField(new Blockly.FieldColour(null), 'line_color_6')
         this.setColour(10);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setInputsInline(true);
-    },
-    validate : function(newValue) {
-        lineValid = true;
-    },
-    validate0: function (newValue0) {
-        rgb_valid_array[0] = true;
-        // let rgb = hexToRgb(newValue0);
-        // rgb_array[0] = [rgb.r, rgb.g, rgb.b];
-    },
-    validate1: function (newValue1) {
-        rgb_valid_array[1] = true;
-        // let rgb = hexToRgb(newValue1);
-        // rgb_array[1] = [rgb.r, rgb.g, rgb.b];
-    },
-    validate2: function (newValue2) {
-        rgb_valid_array[2] = true;
-        // let rgb = hexToRgb(newValue2);
-        // rgb_array[2] = [rgb.r, rgb.g, rgb.b];
-    },
-    validate3: function (newValue3) {
-        rgb_valid_array[3] = true;
-        // let rgb = hexToRgb(newValue3);
-        // rgb_array[3] = [rgb.r, rgb.g, rgb.b];
-    },
-    validate4: function (newValue4) {
-        rgb_valid_array[4] = true;
-        // let rgb = hexToRgb(newValue4);
-        // rgb_array[4] = [rgb.r, rgb.g, rgb.b];
-    },
-    validate5: function (newValue5) {
-        rgb_valid_array[5] = true;
-        // let rgb = hexToRgb(newValue5);
-        // rgb_array[5] = [rgb.r, rgb.g, rgb.b];
-    },
-    validate6: function (newValue6) {
-        rgb_valid_array[6] = true;
-        // let rgb = hexToRgb(newValue6);
-        // rgb_array[6] = [rgb.r, rgb.g, rgb.b];
-    },
+    }
 }
 function threeSplit(str) {
     str = str.split(',');
@@ -283,22 +207,12 @@ function threeSplit(str) {
     return newArr;
 }
 Blockly.JavaScript.draw_single_line = function (block) {
-    if(lineValid == false) {
-        line = 0;
-    }
-    else {
-        line = block.getFieldValue("whichLine");
-    }
+    let line = block.getFieldValue("whichLine");
+    if(line == undefined) line = 0;
     console.log(`line = ${line}`)
     for(var i = 0 ; i < 7 ; i++) {
-        if(rgb_valid_array[i] == false) {
-            rgb_array_total[i] = [0,0,0];
-            continue;
-        }
-        let hex = block.getFieldValue(`COLOUR${i}`);
-        console.log(`hex is ${hex}`);
+        let hex = block.getFieldValue(`line_color_${i}`);
         let rgb = hexToRgb(hex);
-        console.log(`rgb is ${rgb}`);
         rgb_array[i] = [rgb.r, rgb.g, rgb.b];
     }
     rgb_array_total[line] = rgb_array;
