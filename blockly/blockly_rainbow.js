@@ -29,7 +29,9 @@ Blockly.JavaScript.rainbow_clear = function(block) {
     return `rainbow_clear();\n`;
 }
 function hexToRgb(hexType) {
-
+    if(hexType == undefined) {
+        return {r : 0, g : 0, b : 0}
+    }
     var hex = hexType.replace("#", "");
     var value = hex.match(/[a-f\d]/gi);
     console.log(hex);
@@ -46,7 +48,7 @@ function hexToRgb(hexType) {
 
     return { r, g, b }
 }
-//let hexColor = "";
+
 Blockly.Blocks.rainbow_single_led = {
     category : 'rainbow_module',
     init : function() {
@@ -56,14 +58,11 @@ Blockly.Blocks.rainbow_single_led = {
             .setCheck(["Number"])
         this.appendDummyInput()
             .appendField('Color')
-            .appendField(new Blockly.FieldColour(null, this.validate), 'COLOUR');
+            .appendField(new Blockly.FieldColour(null), 'COLOUR');
         this.setColour(200);
         this.setNextStatement(true);
         this.setInputsInline(true);
         this.setPreviousStatement(true);
-    },
-    validate : function(newValue) {
-        hexColor = newValue;
     }
 }
 
@@ -72,10 +71,7 @@ Blockly.JavaScript.rainbow_single_led = function(block) {
     let hexColor = block.getFieldValue('COLOUR')
     let rgb = hexToRgb(hexColor);
     console.log(`hexColor = ${hexColor} rgb = ${rgb}`)
-    let red = rgb.r;
-    let green = rgb.g;
-    let blue = rgb.b;
-    return `rainbow_single_led(${led}, ${red}, ${green}, ${blue})\n`;
+    return `rainbow_single_led(${led}, ${rgb.r}, ${rgb.g}, ${rgb.b})\n`;
 }
 
 Blockly.Blocks.rainbow_single_led_by_rgb = {
@@ -119,27 +115,23 @@ Blockly.Blocks.rainbow_all_led = {
             .appendField('Show all ')
         this.appendDummyInput()
             .appendField('Color')
-            .appendField(new Blockly.FieldColour(null, this.validate), 'COLOUR');
+            .appendField(new Blockly.FieldColour(null), 'COLOUR_ALL');
         this.setColour(200);
         this.setNextStatement(true);
         this.setInputsInline(true);
         this.setPreviousStatement(true);
-    },
-    validate : function(newValue) {
-        hexColor = newValue;
     }
 }
 
 Blockly.JavaScript.rainbow_all_led = function(block) {
-    console.log(`hexColor : ${hexColor}`)
+    let hexColor = block.getFieldValue("COLOUR_ALL")
     let rgb = hexToRgb(hexColor);
-    
     let red = rgb.r;
     let green = rgb.g;
     let blue = rgb.b;
     return `rainbow_all_led(${red}, ${green}, ${blue})\n`;
 }
-let turnTypeValid = false;
+
 Blockly.Blocks.rainbow_set_effect = {
     category : 'rainbow_module',
     init : function() {
@@ -150,7 +142,7 @@ Blockly.Blocks.rainbow_set_effect = {
                 ['Turn ccw', '1'],
                 ['LED cw', '2'],
                 ['LED ccw', '3']
-            ],this.validate), "turnType")
+            ]), "turnType")
         this.appendDummyInput()
             .appendField(',delay')
         this.appendValueInput('delaySec')
@@ -161,19 +153,12 @@ Blockly.Blocks.rainbow_set_effect = {
         this.setNextStatement(true);
         this.setInputsInline(true);
         this.setPreviousStatement(true);
-    },
-    validate : function(newValue) {
-        turnTypeValid = true;
     }
 }
 
 Blockly.JavaScript.rainbow_set_effect = function(block) {
     let delaySec = Blockly.JavaScript.valueToCode(this, 'delaySec', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
-    if(turnTypeValid === false) {
-        type = 0;
-    }
-    else {
-        type = block.getFieldValue("turnType")
-    }
+    let type = "0"
+    type = block.getFieldValue("turnType")
     return `rainbow_set_effect(${type}, ${delaySec})\n`;
 } 
