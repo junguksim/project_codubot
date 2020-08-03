@@ -113,8 +113,8 @@ var imu_loop = setInterval(function() {
 
 
 var FORWARD = 0; var BACKWARD = 1; var LEFT = 2; var RIGHT = 3;
-var DIST_TO_ANGLE = 33.216; // 1 cm = 33.52 deg, // 10.74 cm = 360 deg
-var ROBOT_ANGLE_TO_WHEEL_ANGLE = 2.242; // Robot 360 deg = Wheel 2.242 * 360 deg 
+var DIST_TO_ANGLE = 33.216; // 1 cm = 33.216 deg, // 10.84 cm = 360 deg
+var ROBOT_ANGLE_TO_WHEEL_ANGLE = 3.651; // Robot 360 deg = Wheel 3.651 * 360 deg 
 var codubot_velocity = 50;
 
 function robot_move_dist(dir, vel, dist_cm, wait) {
@@ -135,11 +135,11 @@ function robot_turn(dir, vel, angle, wait) {
   }
 }
 
-function robot_move_angle(dir, vel, angle, wait) {
-  if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]);  i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 0) {}; i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 0) {};}
-  i2c.writeTo(0x0A, [0x02, 4, dir, vel, angle >> 8, angle & 0x00FF, (4 + dir + vel + (angle >> 8) + (angle & 0x00FF)) & 0xFF]);
-  if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]); i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 1) {}; i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 1) {};}
-}
+// function robot_move_angle(dir, vel, angle, wait) {
+//   if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]);  i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 0) {}; i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 0) {};}
+//   i2c.writeTo(0x0A, [0x02, 4, dir, vel, angle >> 8, angle & 0x00FF, (4 + dir + vel + (angle >> 8) + (angle & 0x00FF)) & 0xFF]);
+//   if(wait == true && angle != 0) {i2c.writeTo(0x0A, [1, 1]); i2c.writeTo(0x0A, [12]); while (i2c.readFrom(0x0A, 1) != 1) {}; i2c.writeTo(0x0A, [13]); while (i2c.readFrom(0x0A, 1) != 1) {};}
+// }
 
 function robot_stop() {
   i2c.writeTo(0x0A, [0x02, 5, (5) & 0xFF]);

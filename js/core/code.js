@@ -85,7 +85,7 @@
       }
     });
 
-    // Clean code view
+    // Plus(+) code view
     cleanCodeButton = Espruino.Core.App.addIcon({
       id: "code3",
       icon: "plus",
@@ -97,22 +97,37 @@
       },
       click: function() {
         if (isInBlockly()) {
-          Espruino.Core.Terminal.typeCharacters(Espruino.Core.EditorBlockly.getCode()+"\n");
+          var code = Espruino.Core.EditorBlockly.getCode();
+          if ( code.length > 500 ) {
+            Espruino.Core.CodeWriter.codeAddToEspruino(code, function() {
+              Espruino.Core.Terminal.addNotification("block download complete");
+            });
+          } else {
+              Espruino.Core.Terminal.typeCharacters(code+"\n");
+          }
         } else {
-          Espruino.Core.Terminal.typeCharacters(Espruino.Core.EditorJavaScript.getCode()+"\n");
+          var code = Espruino.Core.EditorJavaScript.getCode();
+          if ( code.length > 500 ) {
+            Espruino.Core.CodeWriter.codeAddToEspruino(code, function() {
+              Espruino.Core.Terminal.addNotification("code download complete");
+            });
+          } else {
+              Espruino.Core.Terminal.typeCharacters(code+"\n");
+          }
         }
       }
     });
 
     
-    // get code from our config area at bootup
-    Espruino.addProcessor("initialised", function(data,callback) {
+      // get code from our config area at bootup
+      Espruino.addProcessor("initialised", function(data,callback) {
       var code;
       if (Espruino.Config.CODE) {
         code = Espruino.Config.CODE;
         console.log("Loaded code from storage.");
       } else {
-        code = "robot_move_angle(0,0,0,2,setTimeout(function(){print('move complete');},1300*2));robot_move_angle(1,0,0,2,setTimeout(function(){print('move complete');},1300*2));"
+        code = "print('initialised');"
+        //code = "robot_move_angle(0,0,0,2,setTimeout(function(){print('move complete');},1300*2));robot_move_angle(1,0,0,2,setTimeout(function(){print('move complete');},1300*2));"
         //code = "function basic_mgmt(){var t=getTime();print(t);}\nfunction pause(p){var t=getTime()+p/1000;while(getTime()<t)basic_mgmt();}\nvar on=false;\nsetInterval(function(){\nprint('codu--------');pause(1000);print('codu========');\n},5000);";
         //code = "var  on = false;\nsetInterval(function() {\n  on = !on;\n  LED1.write(on);\n}, 500);";
         console.log("No code in storage.");
@@ -120,7 +135,6 @@
       Espruino.Core.EditorJavaScript.setCode(code);
       callback(data);
     });
-
 
     Espruino.addProcessor("sending", function(data, callback) {
       if(Espruino.Config.AUTO_SAVE_CODE)

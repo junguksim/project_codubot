@@ -223,9 +223,33 @@
     }
     return resultCode;
   };
+  function codeAddToEspruino(code, callback) {
+    /* hack around non-K&R code formatting that would have
+    broken Espruino CLI's bracket counting */
+    code = reformatCode(code);
+    if (code === undefined) return; // it should already have errored
 
+    // We want to make sure we've got a prompt before sending. If not,
+    // this will issue a Ctrl+C
+    Espruino.Core.Utils.getEspruinoPrompt(function() {
+      // Make sure code ends in 2 newlines
+      while (code[code.length-2]!="\n" || code[code.length-1]!="\n")
+        code += "\n";
+
+      Espruino.Core.Serial.write(code, true, function() {
+        // give 5 seconds for sending with save and 2 seconds without save
+        setTimeout(function cb() {
+          {
+            if (callback) callback();
+          }
+        }, 100);
+        Espruino.Core.Terminal.addNotification("Code Add Complete!");
+      });
+    });
+  };
   Espruino.Core.CodeWriter = {
     init : init,
     writeToEspruino : writeToEspruino,
+    codeAddToEspruino : codeAddToEspruino
   };
 }());
