@@ -45,15 +45,10 @@ Blockly.Blocks.get_radar = {
         this.appendDummyInput()
             .appendField(', Sensor ')
             .appendField(new Blockly.FieldDropdown([
-                ['LEFT', "2"],
+                ['LEFT', "0"],
                 ['CENTER', "1"],
-<<<<<<< HEAD
-                ['RIGHT', "0"]
-            ], this.validate_sensor), "sensor_dropdown")
-=======
                 ['RIGHT', "2"]
             ]), "sensor_dropdown")
->>>>>>> 1dfd8c142b5d3399d9cd97a8d64838229f05157d
         this.setColour(250);
         this.setOutput(true, 'Number')
         this.setInputsInline(true);
