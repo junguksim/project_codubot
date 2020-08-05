@@ -446,10 +446,10 @@
           //Espruino.Core.CodeWriter.writeToEspruino(start_led, function() {
           //  Espruino.Core.Terminal.addNotification("Start Led Complete!");
           //});
-          _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'turn_on_led()', value: 'led 켜기', style:'width: 50px, height: 50px'}))
+          _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'turn_on_led()', value: ' LED 켜기 ', style:'width: 50px, height: 50px'}))
           //_ledmatrix_.append($('<br/>'));
           _ledmatrix_.append($('<label/>', { style: 'display: inline-block; width: 30px; height: 30px; margin: 5px;' }));
-          _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'turn_off_all()', value: '모두 끄기', style: 'width : 30px, height : 30px' }))
+          _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'turn_off_all()', value: ' 모두 끄기 ', style: 'width : 30px, height : 30px' }))
           _ledmatrix_.append($('<br/>'));_ledmatrix_.append($('<br/>'));
           _ledmatrix_.append($('<input/>', { type: 'file', value: '#000000', id: 'fileInput', onchange: 'setColorFromFile()' }));
           //_ledmatrix_.append($('<br/>'));_ledmatrix_.append($('<br/>'));
@@ -460,7 +460,7 @@
           _ledmatrix_.append($('<input/>', { type: 'color', name: 'color-picker', value: '#ff0000', id: 'colorInput', onchange: 'watchColorPicker()' }));
           //_ledmatrix_.append($('<br/>'));
           _ledmatrix_.append($('<label/>', { style: 'display: inline-block; width: 30px; height: 30px; margin: 5px;' }));
-          _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'setBrightness()', value: '밝기 설정하기' }))
+          _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'setBrightness()', value: ' 밝기 설정하기 ' }))
           _ledmatrix_.append($('<br/>'));_ledmatrix_.append($('<br/>'));
           $('#colorInput').ready(function () {
             var color = $('#colorInput').val();
@@ -471,7 +471,9 @@
                 _ledmatrix_.append($('<br/>'));
               }
             }
-            _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'save_led()', value: 'LED 세팅 저장하기' }))
+            _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'load_led_slot()', value: 'LED세팅 불러오기' }))
+            _ledmatrix_.append($('<label/>', { style: 'display: inline-block; width: 10px; height: 30px; margin: 5px;' }));
+            _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'save_led()', value: 'LED세팅 저장하기' }))
             _ledmatrix_.append($('<br/>'));
             _ledmatrix_.css({ "float": "left", "margin-left": "100px", "padding": "50px" })
             $('#LEDMatrix').append(_ledmatrix_);
@@ -750,7 +752,7 @@
           if (checked == false) {
             continue;
           }
-          Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x10, [0x02, 2, ${i}, ${matrixArr[i].r}, ${matrixArr[i].g}, ${matrixArr[i].b}, (2 + ${i} + ${matrixArr[i].r} + ${matrixArr[i].g} +  ${matrixArr[i].b}) & 0xFF]);\n`)
+          Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x10, [0x02, 2, ${i}, ${matrixArr[i][0]}, ${matrixArr[i][1]}, ${matrixArr[i][2]}, (2 + ${i} + ${matrixArr[i][0]} + ${matrixArr[i][1]} +  ${matrixArr[i][2]}) & 0xFF]);\n`)
           //Espruino.Core.Terminal.typeCharacters(`print_single_dot(${i},${matrixArr[i].r}, ${matrixArr[i].g}, ${matrixArr[i].b})\n`)
         }
       }
@@ -781,7 +783,7 @@
         else {
           $(aa).css('background-color', `${hexColor}`);
           $(aa).data('led', `${hexColor}`);
-          matrixArr[el] = color;
+          matrixArr[el] = [color.r, color.g, color.b];
         }
 
       }
@@ -880,7 +882,8 @@
             $(aa).css('background-color', color_value)
 
             $(aai).prop('checked', true);
-            matrixArr[i / 4] = hexToRgb(color_value)
+            let hexColor = hexToRgb(color_value);
+            matrixArr[i / 4] = [hexColor.r, hexColor.g, hexColor.b];
             //console.log(i/4, color_value);
             //if ( (id.data[i]+id.data[i+1]+id.data[i+2]) > 128*3 ) {
             //  id.data[i]=255;id.data[i+1]=255;id.data[i+2]=255;
@@ -923,42 +926,19 @@
             continue;
           }
           matrixArr_[settingsCnt][i] = matrixArr[i];
-          let hexColor = rgbToHex(matrixArr[i].r, matrixArr[i].g, matrixArr[i].b);
+          let hexColor = rgbToHex(matrixArr[i][0], matrixArr[i][1], matrixArr[i][2]);
           ledmatrix__.append($('<label/>', { id: `cbl${i}_`, for: `cb${i}_`, style: `display: inline-block; width: 15px; height: 15px; border: 2px solid black ; cursor: pointer; margin: 5px; background-color:${hexColor}` }));
           if ((i + 1) % 7 == 0) {
             ledmatrix__.append($('<br/>'));
           }
         }
 
-        ledmatrix__.append($('<input/>', { id: "deleteSlotBtn", type: "button", name: "deleteSlotBtn", onclick: `delete_slot(${settingsCnt})`, value: "지우기" }));
+        ledmatrix__.append($('<input/>', { id: "deleteSlotBtn", type: "button", name: "deleteSlotBtn", onclick: `delete_slot(${settingsCnt})`, value: " 지우기 " }));
+        ledmatrix__.append($('<label/>', { style: 'display: inline-block; width: 10px; height: 30px; margin: 5px;' }));
+        ledmatrix__.append($('<input/>', { id: "deleteSlotBtn", type: "button", name: "deleteSlotBtn", onclick: `save_led_slot(${settingsCnt})`, value: " 파일저장 " }));
         ledmatrix__.append($('<br/>'));
         ++settingsCnt;
-        // let table = $("<div/>");
-        // table.attr("class", "jb-table");
-        // table.css({
-        //   display: "table",
-        //   width: "100%"
-        // })
-        // let tableRow = $("<div/>");
-        // tableRow.attr("class", "jb-table-row");
-        // tableRow.css({
-        //   "display": "table-row"
-        // })
-        // let tableCell = $("<div/>");
-        // tableCell.attr("class", "jb-table-cell");
-        // tableCell.css({
-        //   display: "table-cell",
-        //   padding: "0px 20px",
-        //   height: "150px",
-        // })
-        // $("#savedLedSettings").append(table);
-        // if(settingsCnt % 2 == 0) {
-        //   $("#savedLedSettings").append(tableRow);  
-        // }
-        // tableCell.append(ledmatrix__);
-        // tableRow.append(tableCell)
-
-        Espruino.Core.Terminal.typeCharacters(`var settingsCnt = ${settingsCnt};\nvar matrixArr_=[${matrixArr_}]\n`);
+      
         $("#savedLedSettings").append(ledmatrix__)
         ledmatrix__ = $("<div>");
         console.log('==================matrixArr_=================');
@@ -969,13 +949,13 @@
         loading();
         turn_off_all();
         for (var i = 0; i <= 48; i++) {
-          if (matrixArr_[cnt][i] == -1) {
+          if ((matrixArr_[cnt] == null) || (matrixArr_[cnt][i] == -1)) { //khlee 2020.8.5
             continue;
           }
           matrixArr[i] = matrixArr_[cnt][i];
           let aa = "#cbl" + i;
           let aai = "#cb" + i;
-          let hexColor = rgbToHex(matrixArr[i].r, matrixArr[i].g, matrixArr[i].b);
+          let hexColor = rgbToHex(matrixArr[i][0], matrixArr[i][1], matrixArr[i][2]);
           $(aa).css('background-color', `${hexColor}`);
           $(aa).data('led', `${hexColor}`);
           $(aai).prop("checked", true);
@@ -985,6 +965,33 @@
         matrixArr_.splice(cnt, 1);
         $(`#ledmatrix${cnt}`).remove()
         --settingsCnt;
+      }
+      function save_led_slot(cnt) {
+        //console.log(JSON.stringify(matrixArr_[cnt]));
+        let fname = window.prompt("save file name", "led_0");
+        Espruino.Core.File.saveFile(JSON.stringify(matrixArr_[cnt]), fname);
+      }
+      function load_led_slot() {
+        Espruino.Core.Utils.fileOpenDialog("code", "text", function(data) {
+          //console.log(data);
+          let matrixArr_ = JSON.parse(data);
+
+          //loading();
+          turn_off_all();
+          for (var i = 0; i <= 48; i++) {
+            if ((matrixArr_ == null) || (matrixArr_[i] == -1)) { //khlee 2020.8.5
+              continue;
+            }
+            matrixArr[i] = matrixArr_[i];
+            let aa = "#cbl" + i;
+            let aai = "#cb" + i;
+            let hexColor = rgbToHex(matrixArr[i][0], matrixArr[i][1], matrixArr[i][2]);
+            $(aa).css('background-color', `${hexColor}`);
+            $(aa).data('led', `${hexColor}`);
+            $(aai).prop("checked", true);
+          }
+
+        });
       }
       function loading() {
         LoadingWithMask('https://loading.io/asset/378740');

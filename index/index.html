@@ -79,13 +79,16 @@
       -ms-user-select: none;
       user-select: none;
     }
-    input[type="checkbox"]:checked + label {
-        background-color: #666666;
+
+    #savedLedSettings {
+      width: 60%;
+      height: 100%;
+      float: right;
+      border-left: 3px solid rgb(61, 61, 61);
     }
-    
   </style>
 
-    
+
 </head>
 
 <body>
@@ -118,7 +121,7 @@
             <div class="sidebar editor__sidebar" id="sidebar">
               <div class="v-split">
                 <div class="v-split__top sidebar__buttons sidebar__buttons--top"></div>
-                <div class="v-split__bottom sidebar__buttons sidebar__buttons--bottom"> 
+                <div class="v-split__bottom sidebar__buttons sidebar__buttons--bottom">
                   <button onclick='Control()'>Control Pannel</button>
                   <button onclick='StartSensor()'>Start Sensor</button>
                   <button onclick='EndSensor()'>End Sensor</button>
@@ -141,32 +144,28 @@
               <div style='display:table; height:100%; width:50%; float:left;'>
                 <div style='display: table-cell; vertical-align:middle; text-align:center;'>
                   <div style='height:30%;'>
-                    <!--<h1>상단 프레임</h1>-->
-                    <h3>로봇 구동 <span id="clock">0</span> 초 째입니다.</h3>
-                    <button onclick="clock_start()">Clock start</button>
-                    <button onclick="clock_end()">Clock end</button>
                   </div>
                   <div style='height:30%;'>
-                    <h2 id='ir_sensor'></h2>
+                    <h4 id='ir_sensor'></h4>
                     <canvas id='ir_graph' width='300' height='100'></canvas>
                   </div>
                   <div style='height:30%;'>
                     <!--<h1>하단 프레임</h1>-->
                     <table style='width:100%'>
                       <tr>
-                        <td width="20%">
+                        <!-- <td width="20%">
                           <div><img src="img/alarm.jpg" width="50%" onmousedown='robot_alarm()'
                               ontouchstart='robot_alarm()' onmouseup='robot_alarm_stop()'
                               ontouchend='robot_alarm_stop()' /> <img src="img/restart.jpg" width="50%"
                               onclick="robot_resume()" /></div>
-                        </td>
+                        </td> -->
                         <td>
                           <h3>SPEED : <div style='display:inline;' id='speed'>0</div> rev/s</h3>
                         </td>
-                        <td width="20%">
+                        <!-- <td width="20%">
                           <div><img src="img/pause.jpg" width="50%" onclick="robot_wait()" /> <img src="img/stop.jpg"
                               width="50%" onclick="robot_stop()" /></div>
-                        </td>
+                        </td> -->
                       </tr>
                     </table>
                   </div>
@@ -186,14 +185,17 @@
 
             </div>
             <!-- id=control -->
-            <div id='LEDMatrix' class="layer" >
+            <div id='LEDMatrix' class="layer">
+              <div id="savedLedSettings">
+
+              </div>
             </div>
             <!-- id=LEDMatrix-->
           </div>
         </div>
         <!-- id=split-pane__left   -->
-        
-        
+
+
         <div class="split-pane__right">
           <div class="editor editor--code">
             <div class="sidebar editor__sidebar">
@@ -394,25 +396,20 @@
       //$('#sidebar').hide();
 
       function displaySensorData(sensor_data) {
-        //var sensor_data = Espruino.Core.Terminal.getTerminalLine(1);
-        //var s_data = String(sensor_data)
-        if (String(sensor_data).startsWith('[')) {
-          $("#ir_sensor").text(sensor_data);
-          sensor_data = sensor_data.replace('[', '');
-          sensor_data = sensor_data.replace(']', '');
-          var sensor_data_list = sensor_data.split(',');
+        $("#ir_sensor").text(sensor_data);
+        var sensor_data_list = sensor_data.split(',');
 
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.beginPath();
-          ctx.rect(20, 100, 40, -Number(sensor_data_list[0]) / 10);
-          ctx.rect(80, 100, 40, -Number(sensor_data_list[1]) / 10);
-          ctx.rect(140, 100, 40, -Number(sensor_data_list[2]) / 10);
-          ctx.rect(200, 100, 40, -Number(sensor_data_list[3]) / 10);
-          ctx.rect(260, 100, 40, -Number(sensor_data_list[4]) / 10);
-          ctx.fillStyle = '#6666FF';
-          ctx.fill();
-          ctx.closePath();
-        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.rect(20, 100, 40, -Number(sensor_data_list[0]) / 10);
+        ctx.rect(80, 100, 40, -Number(sensor_data_list[1]) / 10);
+        ctx.rect(140, 100, 40, -Number(sensor_data_list[2]) / 10);
+        ctx.rect(200, 100, 40, -Number(sensor_data_list[3]) / 10);
+        ctx.rect(260, 100, 40, -Number(sensor_data_list[4]) / 10);
+        ctx.fillStyle = '#6666FF';
+        ctx.fill();
+        ctx.closePath();
+
       }
 
       function Control() {
@@ -421,16 +418,12 @@
           //$('#sidebar').hide();
           $('#console').hide();
           $('#control').show();
-         
 
           left_width = $('.split-pane__left').css('width');
           right_width = $('.split-pane__right').css('width');
 
           $('.split-pane__left').css('width', '100%');
           $('.split-pane__right').css('width', '0%');
-
-          //StartSensorId = setInterval(displaySensorData, 100);
-
         }
         else {
           //$('#sidebar').show();
@@ -438,67 +431,92 @@
           $('#console').show();
           $('.split-pane__left').css('width', left_width);
           $('.split-pane__right').css('width', right_width);
-          //clearInterval(StartSensorId);
         }
       }
       function LEDMatrix() {
         var _ledmatrix_ = $("<div>");
         _ledmatrix_.attr('id', 'ledmatrix');
+
         if ($('#LEDMatrix').css('display') == 'none') {
           //$('#sidebar').hide();
           $('#console').hide();
           $('#LEDMatrix').show();
-          Espruino.Core.Terminal.typeCharacters(`var i2c = new I2C();\ni2c.setup({scl: D27, sda: D26, bitrate: 400000});\n`);
-          _ledmatrix_.append($('<input/>', {type : 'button', onclick:'turn_on_led()', value : 'led 켜기', style : "width : 30px, height : 30px"}))
+          //var start_led = 'var i2c = new I2C();i2c.setup({scl: D27, sda: D26, bitrate: 400000});function print_string(string_array){var ascii_array=[];var ascii_array_sum=0;var this_ascii=0;for(var i=0;i<((string_array.length>20)?20:string_array.length);i++){if((string_array[i].charCodeAt(0)>=32)&&(string_array[i].charCodeAt(0)<=126)){this_ascii=string_array[i].charCodeAt(0)}else{this_ascii=63}ascii_array.push(this_ascii);ascii_array_sum=ascii_array_sum+this_ascii}i2c.writeTo(0x10,[0x02,8,((string_array.length>20)?20:string_array.length),ascii_array,(8+((string_array.length>20)?20:string_array.length)+ascii_array_sum)&0xFF])};\n';
+          //var start_led = '';
+          //Espruino.Core.CodeWriter.writeToEspruino(start_led, function() {
+          //  Espruino.Core.Terminal.addNotification("Start Led Complete!");
+          //});
+          _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'turn_on_led()', value: 'led 켜기', style: 'width: 50px, height: 50px' }))
+          //_ledmatrix_.append($('<br/>'));
+          _ledmatrix_.append($('<label/>', { style: 'display: inline-block; width: 30px; height: 30px; margin: 5px;' }));
+          _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'turn_off_all()', value: '모두 끄기', style: 'width : 30px, height : 30px' }))
+          _ledmatrix_.append($('<br/>')); _ledmatrix_.append($('<br/>'));
+          _ledmatrix_.append($('<input/>', { type: 'file', value: '#000000', id: 'fileInput', onchange: 'setColorFromFile()' }));
+          //_ledmatrix_.append($('<br/>'));_ledmatrix_.append($('<br/>'));
+          _ledmatrix_.append($('<canvas/>', { id: 'canvas1', width: 7, height: 7, style: 'border: 1px solid black; display:none' }));
+          //_ledmatrix_.append($('<canvas/>', {id:'canvas2', width:7, height:7, style: 'border: 1px solid black; display:none'}));
+          _ledmatrix_.append($('<img/>', { id: 'imgoutput', width: 7, height: 7, style: 'border: 1px solid black' }));
           _ledmatrix_.append($('<br/>'));
-          _ledmatrix_.append($('<input/>', {type:'color', name:'color-picker', value:'#ff0000', id:'colorInput', onchange: 'watchColorPicker()'}));
-          _ledmatrix_.append($('<br/>'));
-          _ledmatrix_.append($('<input/>', {type : 'button', onclick:'setBrightness()', value : '밝기 설정하기'}))
-          _ledmatrix_.append($('<br/>'));
-          $('#colorInput').ready(function() {
+          _ledmatrix_.append($('<input/>', { type: 'color', name: 'color-picker', value: '#ff0000', id: 'colorInput', onchange: 'watchColorPicker()' }));
+          //_ledmatrix_.append($('<br/>'));
+          _ledmatrix_.append($('<label/>', { style: 'display: inline-block; width: 30px; height: 30px; margin: 5px;' }));
+          _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'setBrightness()', value: '밝기 설정하기' }))
+          _ledmatrix_.append($('<br/>')); _ledmatrix_.append($('<br/>'));
+          $('#colorInput').ready(function () {
             var color = $('#colorInput').val();
-            for(var i = 0 ; i <= 48 ; i++) {
-                _ledmatrix_.append($('<input/>', {id:`cb${i}`, type:'checkbox', name:'ledmatrix', value:i, style:`width : 30px; height : 30px; display : none;`}))
-                _ledmatrix_.append($('<label/>', {onclick:'setColor('+i+')', id:`cbl${i}`, for:`cb${i}`, style:`display: inline-block; width: 30px; height: 30px; border: 2px solid black ; cursor: pointer; margin: 5px;`}));
-                if((i+1) % 7 == 0) {
-                  _ledmatrix_.append($('<br/>'));
-                }
-          }
-          _ledmatrix_.css({"float" : "left", "margin-left" : "100px", "padding" : "50px"})
-          $('#LEDMatrix').append(_ledmatrix_);
-          left_width = $('.split-pane__left').css('width');
-          right_width = $('.split-pane__right').css('width');
+            for (var i = 0; i <= 48; i++) {
+              _ledmatrix_.append($('<input/>', { id: `cb${i}`, type: 'checkbox', name: 'ledmatrix', value: i, style: 'width : 30px; height : 30px; display : none;' }))
+              _ledmatrix_.append($('<label/>', { onclick: 'setColor(' + i + ')', id: `cbl${i}`, for: `cb${i}`, style: 'display: inline-block; width: 30px; height: 30px; border: 2px solid black ; cursor: pointer; margin: 5px;' }));
+              if ((i + 1) % 7 == 0) {
+                _ledmatrix_.append($('<br/>'));
+              }
+            }
+            _ledmatrix_.append($('<input/>', { type: 'button', onclick: 'save_led()', value: 'LED 세팅 저장하기' }))
+            _ledmatrix_.append($('<br/>'));
+            _ledmatrix_.css({ "float": "left", "margin-left": "100px", "padding": "50px" })
+            $('#LEDMatrix').append(_ledmatrix_);
+            left_width = $('.split-pane__left').css('width');
+            right_width = $('.split-pane__right').css('width');
 
-          $('.split-pane__left').css('width', '100%');
-          $('.split-pane__right').css('width', '0%');
+            $('.split-pane__left').css('width', '100%');
+            $('.split-pane__right').css('width', '0%');
 
           })
-         
-          //StartSensorId = setInterval(displaySensorData, 100);
 
         }
         else {
           //$('#sidebar').show();
-          
+
           $('#LEDMatrix').hide();
           $('#ledmatrix').remove();
           $('#console').show();
           $('.split-pane__left').css('width', left_width);
           $('.split-pane__right').css('width', right_width);
-          //clearInterval(StartSensorId);
         }
+      }
+      function get_ir_sensor() {
+        Espruino.Core.Terminal.typeCharacters('ir_adc\n');
+        var sensor_data = Espruino.Core.Terminal.getTerminalLine(1);
+        sensor_data = sensor_data.replace('=', '');
+        console.log(sensor_data)
+        return sensor_data;
       }
       function StartSensor() {
         // if not connected, then should return
 
-        Espruino.Core.Terminal.typeCharacters('clearInterval(ir_adc_loop)\n')
+        Espruino.Core.Terminal.typeCharacters('clearInterval(logIr)\n')
 
-        var StartSensor_init = 'var i2c=new I2C();i2c.setup({scl:D27,sda:D26,bitrate:100000});var ir_adc=[0,0,0,0,0];var ir_adc_loop=setInterval(function(){i2c.writeTo(0x01,[1,10]);i2c.writeTo(0x01,[14]);var ir_i2c=i2c.readFrom(0x01,10);ir_adc=[((ir_i2c[0]*256)+ir_i2c[1]),((ir_i2c[2]*256)+ir_i2c[3]),((ir_i2c[4]*256)+ir_i2c[5]),((ir_i2c[6]*256)+ir_i2c[7]),((ir_i2c[8]*256)+ir_i2c[9])];console.log("s0:",ir_adc);},500);var LEFT_MOTOR=0,RIGHT_MOTOR=1,CLOCKWISE=0,COUNTER_CLOCKWISE=1,FORWARD=0,BACKWARD=1,LEFT=2,RIGHT=3,DIST_TO_ANGLE=33.645,ROBOT_ANGLE_TO_WHEEL_ANGLE=3;function robot_turn2(o,_,t){o==LEFT&&o==RIGHT&&i2c.writeTo(1,[2,4,o,_,t*ROBOT_ANGLE_TO_WHEEL_ANGLE>>8,t*ROBOT_ANGLE_TO_WHEEL_ANGLE&255,4+o+_+(t*ROBOT_ANGLE_TO_WHEEL_ANGLE>>8)+(t*ROBOT_ANGLE_TO_WHEEL_ANGLE&255)&255])};function robot_move_angle_no_time(dir,vel,angle){i2c.writeTo(0x01,[0x02,4,dir,vel,angle>>8,angle&0x00FF,(4+dir+vel+(angle>>8)+(angle&0x00FF))&0xFF])};function robot_stop(){i2c.writeTo(0x01,[0x02,5,(5)&0xFF])}\n';
-        Espruino.Core.Terminal.typeCharacters(StartSensor_init);
-
+        //var StartSensor_init = 'var i2c=new I2C();i2c.setup({scl:D27,sda:D26,bitrate:400000});var FORWARD=0;var BACKWARD=1;var LEFT=2;var RIGHT=3;var DIST_TO_ANGLE=34.716;var ROBOT_ANGLE_TO_WHEEL_ANGLE=2.242;var codubot_velocity=50;function robot_move_dist(dir,vel,dist_cm,wait){var wheel_angle=Math.round(dist_cm*DIST_TO_ANGLE);if((dir==FORWARD)||(dir==BACKWARD)){if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=0){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=0){}}i2c.writeTo(0x0A,[0x02,4,dir,vel,wheel_angle>>8,wheel_angle&0x00FF,(4+dir+vel+(wheel_angle>>8)+(wheel_angle&0x00FF))&0xFF]);if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=1){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=1){}}}}function robot_turn(dir,vel,angle,wait){var wheel_angle=Math.round(angle*ROBOT_ANGLE_TO_WHEEL_ANGLE);if((dir==LEFT)||(dir==RIGHT)){if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=0){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=0){}}i2c.writeTo(0x0A,[0x02,4,dir,vel,wheel_angle>>8,wheel_angle&0x00FF,(4+dir+vel+(wheel_angle>>8)+(wheel_angle&0x00FF))&0xFF]);if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=1){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=1){}}}}function robot_move_angle(dir,vel,angle,wait){if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=0){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=0){}}i2c.writeTo(0x0A,[0x02,4,dir,vel,angle>>8,angle&0x00FF,(4+dir+vel+(angle>>8)+(angle&0x00FF))&0xFF]);if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=1){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=1){}}};function robot_stop(){i2c.writeTo(0x0A,[0x02,5,(5)&0xFF])};\n';
+        //Espruino.Core.CodeWriter.writeToEspruino(StartSensor_init, function() {
+        //  Espruino.Core.Terminal.addNotification("Start Sensor Complete!");
+        //  Espruino.Core.Terminal.typeCharacters('var ir_adc=[0,0,0,0,0];var ir_adc_loop=setInterval(function(){i2c.writeTo(0x0A,[1,10]);i2c.writeTo(0x0A,[14]);var ir_i2c=i2c.readFrom(0x0A,10);ir_adc=[((ir_i2c[0]*256)+ir_i2c[1]),((ir_i2c[2]*256)+ir_i2c[3]),((ir_i2c[4]*256)+ir_i2c[5]),((ir_i2c[6]*256)+ir_i2c[7]),((ir_i2c[8]*256)+ir_i2c[9])];},10);var logIr=setInterval(function() {console.log("s0:"+ir_adc)}, 100);\n')
+        //});
+        Espruino.Core.Terminal.typeCharacters('var logIr=setInterval(function() {console.log("s0:"+ir_adc)}, 100);\n');
+        return;
       }
       function EndSensor() {
-        Espruino.Core.Terminal.typeCharacters('clearInterval(ir_adc_loop)\n')
+        //Espruino.Core.Terminal.typeCharacters('clearInterval(ir_adc_loop)\n')
+        Espruino.Core.Terminal.typeCharacters('clearInterval(logIr)\n')
       }
       function robot_stop() {
         Espruino.Core.Terminal.typeCharacters('cancel_all_move()\n')
@@ -522,7 +540,7 @@
         var clock = document.getElementById('clock');
 
         //var txt = Espruino.Core.Terminal.getTerminalLine(1);
-        console.log(Math.round(Number((txt.split('='))[1])));
+        //console.log(Math.round(Number((txt.split('='))[1])));
         if (isNaN(Math.round(Number((txt.split('='))[1]))) == true) {
           clock.innerHTML = 0;
         }
@@ -561,10 +579,10 @@
         var sensor_data = Espruino.Core.Terminal.getTerminalLine(1);
         //var s_data = String(sensor_data)
         if (String(sensor_data).startsWith('s0:')) {
-          displaySensorData(sensor_data.substring(4));
+          displaySensorData(sensor_data.substring(3));
         }
         else if (String(sensor_data).startsWith('=')) {
-          displayClock(sensor_data);
+          //displayClock(sensor_data);
         }
         else {
           // log message
@@ -669,19 +687,19 @@
 
     <script type="text/javascript">
       function go() {
-        Espruino.Core.Terminal.typeCharacters('robot_move_angle_no_time(0,0,0);\n');
+        Espruino.Core.Terminal.typeCharacters('robot_move_dist(0,0,0,false);\n');
         $('#speed').text('1');
       }
       function back() {
-        Espruino.Core.Terminal.typeCharacters('robot_move_angle_no_time(1,0,0);\n');
+        Espruino.Core.Terminal.typeCharacters('robot_move_dist(1,0,0,false);\n');
         $('#speed').text('1');
       }
       function turnL() {
-        Espruino.Core.Terminal.typeCharacters('robot_move_angle_no_time(2,0,0);\n');
+        Espruino.Core.Terminal.typeCharacters('robot_turn(2,0,0,false);\n');
         $('#speed').text('0.5');
       }
       function turnR() {
-        Espruino.Core.Terminal.typeCharacters('robot_move_angle_no_time(3,0,0);\n');
+        Espruino.Core.Terminal.typeCharacters('robot_turn(3,0,0,false);\n');
         $('#speed').text('0.5');
       }
       function stop() {
@@ -692,50 +710,70 @@
     <!-- 20200328 추가부분 -->
 
     <script>
+      let matrixArr = new Array(49);
+      matrixArr.fill(-1);
       function i2c_connect() {
         Espruino.Core.Terminal.typeCharacters(`var i2c = new I2C();\ni2c.setup({scl: D27, sda: D26, bitrate: 400000});\n`);
       }
-      function hexToRgb( hexType ){ 
+      function hexToRgb(hexType) {
 
-        var hex = hexType.replace( "#", "" ); 
-        var value = hex.match( /[a-f\d]/gi ); 
+        var hex = hexType.replace("#", "");
+        var value = hex.match(/[a-f\d]/gi);
 
 
         // 헥사값이 세자리일 경우, 여섯자리로. 
-        if ( value.length == 3 ) hex = value[0] + value[0] + value[1] + value[1] + value[2] + value[2]; 
+        if (value.length == 3) hex = value[0] + value[0] + value[1] + value[1] + value[2] + value[2];
 
 
-        value = hex.match( /[a-f\d]{2}/gi ); 
+        value = hex.match(/[a-f\d]{2}/gi);
 
-        var r = parseInt( value[0], 16 ); 
-        var g = parseInt( value[1], 16 ); 
-        var b = parseInt( value[2], 16 ); 
+        var r = parseInt(value[0], 16);
+        var g = parseInt(value[1], 16);
+        var b = parseInt(value[2], 16);
 
-        return {r,g,b}
+        return { r, g, b }
       }
-      let matrixArr = new Array(49);
-      matrixArr.fill(-1);
+      function rgbToHex(r, g, b) {
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+      }
+
       function turn_on_led() {
-        for(var i = 0 ; i < matrixArr.length; i++) {
+
+        for (var i = 0; i < matrixArr.length; i++) {
           let checked = $(`input:checkbox[id=cb${i}]`).is(":checked")
-          if(matrixArr[i] == -2) {
-            Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 2, ${i}, 0, 0, 0, (2 + ${i} + 0 + 0 + 0) & 0xFF]);\n`);
+          console.log(i, checked);
+          if (matrixArr[i] == -2) {
+            Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x10, [0x02, 2, ${i}, 0, 0, 0, (2 + ${i} + 0 + 0 + 0) & 0xFF]);\n`);
             matrixArr[i] = -1;
             continue;
           }
-          if(checked == false) {
+          if (checked == false) {
             continue;
           }
-          Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 2, ${i}, ${matrixArr[i].r}, ${matrixArr[i].g}, ${matrixArr[i].b}, (2 + ${i} + ${matrixArr[i].r} + ${matrixArr[i].g} +  ${matrixArr[i].b}) & 0xFF]);\n`)
+          Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x10, [0x02, 2, ${i}, ${matrixArr[i][0]}, ${matrixArr[i][1]}, ${matrixArr[i][2]}, (2 + ${i} + ${matrixArr[i][0]} + ${matrixArr[i][1]} +  ${matrixArr[i][2]}) & 0xFF]);\n`)
           //Espruino.Core.Terminal.typeCharacters(`print_single_dot(${i},${matrixArr[i].r}, ${matrixArr[i].g}, ${matrixArr[i].b})\n`)
         }
       }
-      
+      function turn_off_all() {
+        for (var i = 0; i < matrixArr.length; i++) {
+          if (matrixArr[i] == -1) {
+            continue;
+          }
+          matrixArr[i] = -1;
+          let aa = "#cbl" + i;
+          let aai = "#cb" + i;
+          $(aai).prop('checked', false);
+          $(aa).css('background-color', '#ffffff');
+          $(aa).data('led', null);
+
+        }
+        Espruino.Core.Terminal.typeCharacters(`print_string(" ")\n`)
+      }
       function setColor(el) {
         let hexColor = pickedHexColor;
         let color = hexToRgb(hexColor);
         let aa = "#cbl" + el;
-        if ( $(aa).data('led') != null ) {
+        if ($(aa).data('led') != null) {
           $(aa).css('background-color', '#ffffff');
           $(aa).data('led', null);
           matrixArr[el] = -2;
@@ -743,21 +781,311 @@
         else {
           $(aa).css('background-color', `${hexColor}`);
           $(aa).data('led', `${hexColor}`);
-          matrixArr[el] = color;
+          matrixArr[el] = [color.r, color.g, color.b];
         }
-        
+
       }
 
       var pickedHexColor = "#ff0000";
       function watchColorPicker(event) {
+        console.log((document.getElementsByName('color-picker'))[0])
         pickedHexColor = (document.getElementsByName('color-picker'))[0].value;
         console.log("new color : " + pickedHexColor);
       }
       function setBrightness() {
-        var brightness= prompt("밝기 값을 입력하세요.(1~10)", "10");
-        
-        Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x07, [0x02, 1,${brightness}, (1 + ${brightness}) & 0xFF]);\n`)
+        var brightness = prompt("밝기 값을 입력하세요.(1~10)", "10");
 
+        Espruino.Core.Terminal.typeCharacters(`i2c.writeTo(0x10, [0x02, 1,${brightness}, (1 + ${brightness}) & 0xFF]);\n`)
+
+      }
+      function threeSplit(str) {
+        str = str.split(',');
+        let newArr = "";
+        let str_ = "";
+        for (var i = 0; i < str.length; i++) {
+          if(str[i] == -1) continue;
+          if ((i + 1) % 3 == 0) {
+            str_ += str[i];
+            str_ = "[" + str_;
+            if (i == str.length - 1) {
+              str_ = str_ + "]";
+            }
+            else {
+              str_ = str_ + "],";
+            }
+            newArr += str_;
+            str_ = "";
+            continue;
+
+          }
+          str_ += str[i];
+          str_ += ",";
+        }
+        console.log(newArr);
+        return newArr;
+      }
+      function setColorFromFile() {
+
+        //console.log("read file : ");
+
+        var filesToUpload = document.getElementById('fileInput').files;
+        var file = filesToUpload[0];
+        //console.log("read file : ", file);
+
+        // 문서내에 img 객체를 생성합니다
+        img = document.createElement("img");
+
+        // 파일을 읽을 수 있는 File Reader 를 생성합니다
+        var reader = new FileReader();
+
+        // 파일이 읽혀지면 아래 함수가 실행됩니다
+        reader.onerror = function (e) {
+          console.log("read file error : ", e);
+        }
+
+        reader.onload = function (e) {
+          //console.log("read file onload : ", e);
+
+          img.src = e.target.result;
+          //console.log("read file e 1:" + img.src);
+
+          // HTML5 canvas 객체를 생성합니다
+          var canvas = document.getElementById("canvas1");
+          //var canvas = document.createElement("canvas");
+          canvas.width = 7; canvas.height = 7;
+          var ctx = canvas.getContext("2d");
+          ctx.clearRect(0, 0, 7, 7);
+
+          // 캔버스에 업로드된 이미지를 그려줍니다
+          ctx.drawImage(img, 0, 0); //, 7, 7);
+
+          setTimeout(function () {
+            var width = 7;
+            var height = 7;
+            //canvas.width = width;
+            //canvas.height = height;
+
+            // canvas에 변경된 크기의 이미지를 다시 그려줍니다.
+            //var canvas = document.getElementById("canvas2");
+            //var ctx = canvas2.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // canvas 에 있는 이미지를 img 태그로 넣어줍니다
+            var dataurl = canvas.toDataURL("image/png");
+            document.getElementById('imgoutput').width = 28;
+            document.getElementById('imgoutput').src = dataurl;
+
+            setTimeout(setLEDGrid, 500);
+          }, 500);
+        }
+
+        function setLEDGrid() {
+
+          var canvas = document.getElementById("canvas1");
+          var ctx = canvas.getContext("2d");
+
+          // 복제된 이미지에 대한 픽셀정보를 가져옴
+          var id = ctx.getImageData(0, 0, 7, 7);
+
+          // 픽셀순회
+          //var debug =  document.getElementById('debug');
+          //debug.innerHTML = "";
+          for (var i = 0; i < id.data.length; i += 4) {
+            let aai = "#cb" + i / 4;
+            let aa = "#cbl" + i / 4;
+            let color_value = "#" + id.data[i + 0].toString(16) + id.data[i + 1].toString(16) + id.data[i + 2].toString(16);
+            //debug.innerHTML += (i/4)+":"+id.data[i]+","+id.data[i+1]+","+id.data[i+2]+","+id.data[i+3]+ ",";
+            if (id.data[i + 0] + id.data[i + 1] + id.data[i + 2] == 765) {
+              $(aai).prop('checked', false);
+              $(aa).css('background-color', color_value)
+              continue;
+            }
+
+
+            $(aa).css('background-color', color_value)
+
+            $(aai).prop('checked', true);
+            let rgb =  hexToRgb(color_value);
+            matrixArr[i / 4] = [rgb.r, rgb.g, rgb.b];
+            //console.log(i/4, color_value);
+            //if ( (id.data[i]+id.data[i+1]+id.data[i+2]) > 128*3 ) {
+            //  id.data[i]=255;id.data[i+1]=255;id.data[i+2]=255;
+            //}
+            //else {
+            //  id.data[i]=0;id.data[i+1]=0;id.data[i+2]=0;
+            //}
+          }
+          //console.log("read file e 3: ");//, id.data.length/4);
+
+        }
+
+        reader.readAsDataURL(file);
+        //console.log("read file e 4: ");
+
+      }
+      let matrixArr_ = [];
+      let settingsCnt = 0;
+      function save_led() {
+
+        var ledmatrix__ = $("<div>");
+        ledmatrix__.attr({
+          'id': `ledmatrix${settingsCnt}`,
+          "onclick": `load_led(${settingsCnt})`
+        });
+        ledmatrix__.css({
+          "cursor": "pointer",
+          "width": "40%",
+          'border': '3px solid black',
+          "margin": "10px"
+        });
+        matrixArr_.push((new Array(49).fill(-1)));
+        for (var i = 0; i <= 48; i++) {
+          ledmatrix__.append($('<input/>', { id: `cb${i}_`, type: 'checkbox', onclick: "return false;", name: 'ledmatrix', value: i, style: `width : 30px; height : 30px; display : none;` }))
+          if (matrixArr[i] == -1) {
+            ledmatrix__.append($('<label/>', { id: `cbl${i}_`, for: `cb${i}_`, style: `display: inline-block; width: 15px; height: 15px; border: 2px solid black ; cursor: pointer; margin: 5px;` }));
+            if ((i + 1) % 7 == 0) {
+              ledmatrix__.append($('<br/>'));
+            }
+            continue;
+          }
+          matrixArr_[settingsCnt][i] = matrixArr[i];
+          let hexColor = rgbToHex(matrixArr[i][0], matrixArr[i][1], matrixArr[i][2]);
+          ledmatrix__.append($('<label/>', { id: `cbl${i}_`, for: `cb${i}_`, style: `display: inline-block; width: 15px; height: 15px; border: 2px solid black ; cursor: pointer; margin: 5px; background-color:${hexColor}` }));
+          if ((i + 1) % 7 == 0) {
+            ledmatrix__.append($('<br/>'));
+          }
+        }
+
+        ledmatrix__.append($('<input/>', { id: "deleteSlotBtn", type: "button", name: "deleteSlotBtn", onclick: `delete_slot(${settingsCnt})`, value: "지우기" }));
+        ledmatrix__.append($('<br/>'));
+        ++settingsCnt;
+        // let table = $("<div/>");
+        // table.attr("class", "jb-table");
+        // table.css({
+        //   display: "table",
+        //   width: "100%"
+        // })
+        // let tableRow = $("<div/>");
+        // tableRow.attr("class", "jb-table-row");
+        // tableRow.css({
+        //   "display": "table-row"
+        // })
+        // let tableCell = $("<div/>");
+        // tableCell.attr("class", "jb-table-cell");
+        // tableCell.css({
+        //   display: "table-cell",
+        //   padding: "0px 20px",
+        //   height: "150px",
+        // })
+        // $("#savedLedSettings").append(table);
+        // if(settingsCnt % 2 == 0) {
+        //   $("#savedLedSettings").append(tableRow);  
+        // }
+        // tableCell.append(ledmatrix__);
+        // tableRow.append(tableCell)
+        let matrixStr = "";
+        let totalMatrixStr = "";
+        for(var cnt = 0 ; cnt < matrixArr_.length; cnt++) {
+          for(var idx = 0 ;  idx < matrixArr_[cnt].length ; idx++) {
+            if(matrixArr_[cnt][idx] == -1) {
+              if(idx == 0) {
+                matrixStr += "[-1,";
+                console.log(`idx = ${idx} add [-1,`)
+                continue;
+              }
+              if(idx == matrixArr_[cnt].length-1) {
+                matrixStr += "-1]";
+                console.log(`idx = ${idx} add -1]`);
+                continue;
+              }
+              matrixStr += "-1,";
+              console.log(`idx = ${idx} add -1, `);
+              continue;
+            }
+            if(idx == 0) {
+                matrixStr += "[[" + matrixArr_[cnt][idx].toString() + "],"
+                console.log(`idx = ${idx} add [[matrix어쩌고],`);
+                continue;
+            }
+            if(idx == matrixArr_[cnt].length-1) {
+                matrixStr += "[" + matrixArr_[cnt][idx].toString() + "]]"
+                console.log(`idx = ${idx} add [matrix어쩌고]]`);
+                continue;
+            }
+            matrixStr += "[" + matrixArr_[cnt][idx].toString() + "],"
+            console.log(`idx = ${idx} add [matrix어쩌고],`);
+          }
+          if(cnt == matrixArr_.length-1) {
+            totalMatrixStr += matrixStr;
+            break;
+          }
+          totalMatrixStr += matrixStr + "],"
+          matrixStr = ""
+        }
+        Espruino.Core.CodeWriter.codeAddToEspruino(`var settingsCnt = ${settingsCnt};\nvar matrixArr_=[${totalMatrixStr}]\n`);
+        $("#savedLedSettings").append(ledmatrix__)
+        ledmatrix__ = $("<div>");
+        console.log(`total : ${totalMatrixStr}`);
+        turn_off_all();
+      }
+      function load_led(cnt) {
+        loading();
+        turn_off_all();
+        for (var i = 0; i <= 48; i++) {
+          if (matrixArr_[cnt][i] == -1) {
+            continue;
+          }
+          matrixArr[i] = matrixArr_[cnt][i];
+          let aa = "#cbl" + i;
+          let aai = "#cb" + i;
+          let hexColor = rgbToHex(matrixArr[i][0], matrixArr[i][1], matrixArr[i][2]);
+          $(aa).css('background-color', `${hexColor}`);
+          $(aa).data('led', `${hexColor}`);
+          $(aai).prop("checked", true);
+        }
+      }
+      function delete_slot(cnt) {
+        matrixArr_.splice(cnt, 1);
+        $(`#ledmatrix${cnt}`).remove()
+        --settingsCnt;
+      }
+      function loading() {
+        LoadingWithMask('https://loading.io/asset/378740');
+        setTimeout("closeLoadingWithMask()", 1500);
+      }
+
+      function LoadingWithMask(gif) {
+        //화면의 높이와 너비를 구합니다.
+        var maskHeight = $(document).height();
+        var maskWidth = window.document.body.clientWidth;
+
+        //화면에 출력할 마스크를 설정해줍니다.
+        var mask = "<div id='mask' style='position:absolute; z-index:9000; background-color:#000000; display:none; left:0; top:0;'></div>";
+        var loadingImg = '';
+
+        loadingImg += " <img src='" + gif + "' style='position: absolute; display: block; margin: 0px auto;'/>";
+        console.log(loadingImg)
+        //화면에 레이어 추가
+        $('body')
+          .append(mask)
+
+        //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채웁니다.
+        $('#mask').css({
+          'width': maskWidth,
+          'height': maskHeight,
+          'opacity': '0.3'
+        });
+
+        //마스크 표시
+        $('#mask').show();
+        //로딩중 이미지 표시
+        $('#loadingImg').append(loadingImg);
+        $('#loadingImg').show();
+      }
+
+      function closeLoadingWithMask() {
+        $('#mask, #loadingImg').hide();
+        $('#mask, #loadingImg').empty();
       }
     </script>
 

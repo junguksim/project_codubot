@@ -88,6 +88,9 @@ Blockly.JavaScript.draw_single_led = function (block) {
     let dot = Blockly.JavaScript.valueToCode(this, 'dot', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
     let hexColor = block.getFieldValue("single_led_color");
     console.log(`hexColor : ${hexColor}`)
+    if(hexColor == "") {
+        hexColor = "000000";
+    }
     let rgb = hexToRgb(hexColor);
 
     let red = rgb.r;
@@ -131,22 +134,43 @@ Blockly.Blocks.draw_image = {
             .appendField('Draw Image');
         this.appendValueInput('imageNum')
             .setCheck(["Number"])
-        this.appendDummyInput()
-            .appendField(new Blockly.FieldDropdown([
-                ['#0', "0"],
-                ['#1', '1']
-            ]), "imageSelect")
+        // this.appendDummyInput()
+        //     .appendField(new Blockly.FieldDropdown([
+        //         ['#0', "0"],
+        //         ['#1', '1']
+        //     ]), "imageSelect")
         this.setColour(10);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setInputsInline(true);
     }
 }
+function readTextFile(file)
+{
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                var allText = rawFile.responseText;
+                alert(allText);
+            }
+        }
+    }
+    rawFile.send(null);
+}
+let colorTxt = "";
+Blockly.JavaScript.draw_image = async function (block) {
+    let imageNum = Blockly.JavaScript.valueToCode(this, 'imageNum', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
+    
+    colorTxt = (await fetch('led_0.txt')).text();
+    console.log(colorTxt)
+    
 
-Blockly.JavaScript.draw_image = function () {
-    let img = 0;
-    img = block.getFieldValue("imageSelect");
-    return `print_every_line(matrixArr_[${img}])`;
+    return `print_every_line([${colorTxt}])`;
 }
 let rgb_array_total = new Array(7);
 let rgbStr = "";
@@ -212,6 +236,9 @@ Blockly.JavaScript.draw_single_line = function (block) {
     console.log(`line = ${line}`)
     for(var i = 0 ; i < 7 ; i++) {
         let hex = block.getFieldValue(`line_color_${i}`);
+        if(hex == "") {
+            hex = "000000";
+        }
         let rgb = hexToRgb(hex);
         rgb_array[i] = [rgb.r, rgb.g, rgb.b];
     }
@@ -220,3 +247,4 @@ Blockly.JavaScript.draw_single_line = function (block) {
     rgb_str = threeSplit(rgb_str);
     return `print_single_line(${line}, [${rgb_str}]);\n`;
 }
+

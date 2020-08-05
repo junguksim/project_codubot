@@ -152,8 +152,8 @@
       }, 0);
     }
   };
-
   Espruino.Core.File = {
-    init : init
+    init : init,
+    saveFile : saveFile,
   };
 }());
