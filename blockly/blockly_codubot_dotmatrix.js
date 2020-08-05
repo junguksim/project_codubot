@@ -145,31 +145,25 @@ Blockly.Blocks.draw_image = {
         this.setInputsInline(true);
     }
 }
-function readTextFile(file)
-{
-    var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", file, false);
-    rawFile.onreadystatechange = function ()
-    {
-        if(rawFile.readyState === 4)
-        {
-            if(rawFile.status === 200 || rawFile.status == 0)
-            {
-                var allText = rawFile.responseText;
-                alert(allText);
-            }
-        }
-    }
-    rawFile.send(null);
+function getText() {
+    return new Promise((resolve, reject)=>{
+        resolve(fetch("led_0.txt")
+            .then(function (response) {
+                return response.text();
+            }));
+    })
 }
-let colorTxt = "";
-Blockly.JavaScript.draw_image = async function (block) {
+Blockly.JavaScript.draw_image = function (block) {
     let imageNum = Blockly.JavaScript.valueToCode(this, 'imageNum', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
-    
-    colorTxt = (await fetch('led_0.txt')).text();
-    console.log(colorTxt)
-    
-
+    let colorTxt = "";
+    getText().then(function (result) {
+        colorTxt = result;
+        console.log(`colorTxt in then : ${colorTxt}`)
+        
+    })
+    setTimeout(()=>{
+        console.log(`colorTxt out of then : ${colorTxt}`)
+    }, 1000);
     return `print_every_line([${colorTxt}])`;
 }
 let rgb_array_total = new Array(7);
