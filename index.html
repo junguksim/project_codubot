@@ -420,7 +420,7 @@
         $("#yaw_gyro_sensor").text(sensor_data);
           gyro_ctx.clearRect(0, 0, gyro_canvas.width, gyro_canvas.height);
           gyro_ctx.beginPath();
-          gyro_ctx.rect(140, 20, 40, Number(sensor_data) * 500)
+          gyro_ctx.rect(140, 20,Number(sensor_data) * 500, 40)
           gyro_ctx.fillStyle = '#FF6666';
           gyro_ctx.fill();
           gyro_ctx.closePath();
@@ -526,7 +526,7 @@
         //  Espruino.Core.Terminal.addNotification("Start Sensor Complete!");
         //  Espruino.Core.Terminal.typeCharacters('var ir_adc=[0,0,0,0,0];var ir_adc_loop=setInterval(function(){i2c.writeTo(0x0A,[1,10]);i2c.writeTo(0x0A,[14]);var ir_i2c=i2c.readFrom(0x0A,10);ir_adc=[((ir_i2c[0]*256)+ir_i2c[1]),((ir_i2c[2]*256)+ir_i2c[3]),((ir_i2c[4]*256)+ir_i2c[5]),((ir_i2c[6]*256)+ir_i2c[7]),((ir_i2c[8]*256)+ir_i2c[9])];},10);var logIr=setInterval(function() {console.log("s0:"+ir_adc)}, 100);\n')
         //});
-        Espruino.Core.Terminal.typeCharacters('var logIr=setInterval(function() {console.log("s0:"+ir_adc)}, 200);\nvar logGyro=setInterval(function() {console.log("gyro:"+yaw_gyro)}, 200);\n');
+        Espruino.Core.Terminal.typeCharacters('var logIr=setInterval(function() {console.log("s0:"+ir_adc)}, 100);\nvar logGyro=setInterval(function() {console.log("gyro:"+yaw_gyro)}, 100);\n');
         return;
       }
       function EndSensor() {

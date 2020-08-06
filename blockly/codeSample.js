@@ -233,7 +233,10 @@ function change_volume_by_number(number) {
 };
 
 function play_until_done(number) {
-  play_sound(number); i2c.writeTo(0x0D, [1, 1]);  i2c.writeTo(0x0D, [12]); while(i2c.readFrom(0x0D, 1) == 0); while(i2c.readFrom(0x0D, 1) == 1);
+  play_sound(number); 
+  i2c.writeTo(0x0D, [1, 1]);  i2c.writeTo(0x0D, [12]); 
+  while(i2c.readFrom(0x0D, 1) == 0) {}; 
+  while(i2c.readFrom(0x0D, 1) == 1) {};
 }
 
 // * 레인보우

@@ -10,7 +10,7 @@ Blockly.Blocks.voice_ready = {
     }
 }
 Blockly.JavaScript.voice_ready = function () {
-    return "i2c.writeTo(0x0D,[1,1]);i2c.writeTo(0x0D,[15]);var temp_mp3=i2c.readFrom(0x0D,1);var max_number_mp3=temp_mp3[0];function play_sound(number){i2c.writeTo(0x0D,[0x02,80,Math.min(Math.max(parseInt(number),1),max_number_mp3),(80+Math.min(Math.max(parseInt(number),1),max_number_mp3))&0xFF])}function stop_sound(){i2c.writeTo(0x0D,[0x02,83,(83)&0xFF])}function change_volume_by_ratio(ratio){ratio=Math.min(Math.max(parseInt(Math.round(0.3*ratio)),0),30);i2c.writeTo(0x0D,[1,1]);i2c.writeTo(0x0D,[14]);var current_volume=i2c.readFrom(0x0D,1);var number=ratio-current_volume;for(var i=0;i<Math.abs(number);i++){if(number>0)i2c.writeTo(0x0D,[0x02,85,(85)&0xFF]);else if(number<0)i2c.writeTo(0x0D,[0x02,68,(68)&0xFF])}}function change_volume_by_number(number){number=Math.min(Math.max(parseInt(number),-30),30);for(var i=0;i<Math.abs(number);i++){if(number>0)i2c.writeTo(0x0D,[0x02,85,(85)&0xFF]);else if(number<0)i2c.writeTo(0x0D,[0x02,68,(68)&0xFF])}}\n"
+    return "i2c.writeTo(0x0D,[1,1]);i2c.writeTo(0x0D,[15]);var temp_mp3=i2c.readFrom(0x0D,1);var max_number_mp3=temp_mp3[0];function play_sound(number){i2c.writeTo(0x0D,[0x02,80,Math.min(Math.max(parseInt(number),1),max_number_mp3),(80+Math.min(Math.max(parseInt(number),1),max_number_mp3))&0xFF])}function stop_sound(){i2c.writeTo(0x0D,[0x02,83,(83)&0xFF])}function change_volume_by_ratio(ratio){ratio=Math.min(Math.max(parseInt(Math.round(0.3*ratio)),0),30);i2c.writeTo(0x0D,[1,1]);i2c.writeTo(0x0D,[14]);var current_volume=i2c.readFrom(0x0D,1);var number=ratio-current_volume;for(var i=0;i<Math.abs(number);i++){if(number>0)i2c.writeTo(0x0D,[0x02,85,(85)&0xFF]);else if(number<0)i2c.writeTo(0x0D,[0x02,68,(68)&0xFF])}};function change_volume_by_number(number){number=Math.min(Math.max(parseInt(number),-30),30);for(var i=0;i<Math.abs(number);i++){if(number>0)i2c.writeTo(0x0D,[0x02,85,(85)&0xFF]);else if(number<0)i2c.writeTo(0x0D,[0x02,68,(68)&0xFF])}};function play_until_done(number){play_sound(number);i2c.writeTo(0x0D,[1,1]);i2c.writeTo(0x0D,[12]);while(i2c.readFrom(0x0D,1)==0){};while(i2c.readFrom(0x0D,1)==1){}}\n"
 }
 
 function makeDropDownArray(count, start) {
@@ -44,14 +44,11 @@ Blockly.Blocks.play_sound = {
     }
 }
 Blockly.JavaScript.play_sound = function (block) {
-    let soundVal = "0";
+    let soundVal = "1";
     soundVal = block.getFieldValue("soundNum");
     let untilDoneValid = block.getFieldValue("untilDone");
-    if (untilDoneValid == true) {
-        return `play_sound(${soundVal});\n
-            i2c.writeTo(0x0D, [1, 1]);\n
-            i2c.writeTo(0x0D, [12]); while(i2c.readFrom(0x0D, 1) == 0);\n
-            while(i2c.readFrom(0x0D, 1) == 1);\n`
+    if (untilDoneValid == "TRUE") {
+        return `play_until_done(${soundVal});\n`    
     }
     else {
         return `play_sound(${soundVal});\n`;
