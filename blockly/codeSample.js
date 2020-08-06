@@ -266,9 +266,9 @@ function rainbow_set_effect(effect_number, delay_ms) {
 // * IR Raidar
 var RED_TEAM = 0; // 600 hz
 var BLUE_TEAM = 1; // 900 hz
-var IR_RADAR_LEFT = 0; // 왼쪽 센서
+var IR_RADAR_LEFT = 2; // 왼쪽 센서
 var IR_RADAR_MIDDLE = 1; // 가운데 센서
-var IR_RADAR_RIGHT = 2; // 오른쪽 센서
+var IR_RADAR_RIGHT = 0; // 오른쪽 센서
 
 function join_team(team) {
   i2c.writeTo(0x0C, [0x02, (team + 65), (team + 65) & 0xFF]);

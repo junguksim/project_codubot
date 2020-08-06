@@ -150,6 +150,10 @@
                     <canvas id='ir_graph' width='300' height='100'></canvas>
                   </div>
                   <div style='height:30%;'>
+                    <h4 id='yaw_gyro_sensor'></h4>
+                    <canvas id='yaw_gyro_graph' width='300' height='100'></canvas>
+                  </div>
+                  <div style='height:30%;'>
                     <!--<h1>하단 프레임</h1>-->
                     <table style='width:100%'>
                       <tr>
@@ -392,7 +396,8 @@
       var right_width
       var canvas = document.getElementById('ir_graph');
       var ctx = canvas.getContext('2d');
-
+      var gyro_canvas = document.getElementById('yaw_gyro_graph');
+      var gyro_ctx = gyro_canvas.getContext('2d');
       //$('#sidebar').hide();
 
       function displaySensorData(sensor_data) {
@@ -411,7 +416,15 @@
           ctx.closePath();
         
       }
-
+      function displayGyroSensorData(sensor_data) {
+        $("#yaw_gyro_sensor").text(sensor_data);
+          gyro_ctx.clearRect(0, 0, gyro_canvas.width, gyro_canvas.height);
+          gyro_ctx.beginPath();
+          gyro_ctx.rect(140, 20, 40, Number(sensor_data) * 500)
+          gyro_ctx.fillStyle = '#FF6666';
+          gyro_ctx.fill();
+          gyro_ctx.closePath();
+      }
       function Control() {
 
         if ($('#control').css('display') == 'none') {
@@ -506,19 +519,19 @@
       function StartSensor() {
         // if not connected, then should return
 
-        Espruino.Core.Terminal.typeCharacters('clearInterval(logIr)\n')
+        Espruino.Core.Terminal.typeCharacters('clearInterval(logIr)\nclearInterval(logGyro)\n')
 
         //var StartSensor_init = 'var i2c=new I2C();i2c.setup({scl:D27,sda:D26,bitrate:400000});var FORWARD=0;var BACKWARD=1;var LEFT=2;var RIGHT=3;var DIST_TO_ANGLE=34.716;var ROBOT_ANGLE_TO_WHEEL_ANGLE=2.242;var codubot_velocity=50;function robot_move_dist(dir,vel,dist_cm,wait){var wheel_angle=Math.round(dist_cm*DIST_TO_ANGLE);if((dir==FORWARD)||(dir==BACKWARD)){if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=0){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=0){}}i2c.writeTo(0x0A,[0x02,4,dir,vel,wheel_angle>>8,wheel_angle&0x00FF,(4+dir+vel+(wheel_angle>>8)+(wheel_angle&0x00FF))&0xFF]);if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=1){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=1){}}}}function robot_turn(dir,vel,angle,wait){var wheel_angle=Math.round(angle*ROBOT_ANGLE_TO_WHEEL_ANGLE);if((dir==LEFT)||(dir==RIGHT)){if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=0){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=0){}}i2c.writeTo(0x0A,[0x02,4,dir,vel,wheel_angle>>8,wheel_angle&0x00FF,(4+dir+vel+(wheel_angle>>8)+(wheel_angle&0x00FF))&0xFF]);if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=1){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=1){}}}}function robot_move_angle(dir,vel,angle,wait){if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=0){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=0){}}i2c.writeTo(0x0A,[0x02,4,dir,vel,angle>>8,angle&0x00FF,(4+dir+vel+(angle>>8)+(angle&0x00FF))&0xFF]);if(wait==true){i2c.writeTo(0x0A,[1,1]);i2c.writeTo(0x0A,[12]);while(i2c.readFrom(0x0A,1)!=1){};i2c.writeTo(0x0A,[13]);while(i2c.readFrom(0x0A,1)!=1){}}};function robot_stop(){i2c.writeTo(0x0A,[0x02,5,(5)&0xFF])};\n';
         //Espruino.Core.CodeWriter.writeToEspruino(StartSensor_init, function() {
         //  Espruino.Core.Terminal.addNotification("Start Sensor Complete!");
         //  Espruino.Core.Terminal.typeCharacters('var ir_adc=[0,0,0,0,0];var ir_adc_loop=setInterval(function(){i2c.writeTo(0x0A,[1,10]);i2c.writeTo(0x0A,[14]);var ir_i2c=i2c.readFrom(0x0A,10);ir_adc=[((ir_i2c[0]*256)+ir_i2c[1]),((ir_i2c[2]*256)+ir_i2c[3]),((ir_i2c[4]*256)+ir_i2c[5]),((ir_i2c[6]*256)+ir_i2c[7]),((ir_i2c[8]*256)+ir_i2c[9])];},10);var logIr=setInterval(function() {console.log("s0:"+ir_adc)}, 100);\n')
         //});
-        Espruino.Core.Terminal.typeCharacters('var logIr=setInterval(function() {console.log("s0:"+ir_adc)}, 100);\n');
+        Espruino.Core.Terminal.typeCharacters('var logIr=setInterval(function() {console.log("s0:"+ir_adc)}, 200);\nvar logGyro=setInterval(function() {console.log("gyro:"+yaw_gyro)}, 200);\n');
         return;
       }
       function EndSensor() {
         //Espruino.Core.Terminal.typeCharacters('clearInterval(ir_adc_loop)\n')
-        Espruino.Core.Terminal.typeCharacters('clearInterval(logIr)\n')
+        Espruino.Core.Terminal.typeCharacters('clearInterval(logIr)\nclearInterval(logGyro)\n')
       }
       function robot_stop() {
         Espruino.Core.Terminal.typeCharacters('cancel_all_move()\n')
@@ -579,16 +592,19 @@
       rid = 0;
       function newDataFromRobot(rdata) {
         var sensor_data = Espruino.Core.Terminal.getTerminalLine(1);
+        var gyro_data = Espruino.Core.Terminal.getTerminalLine(2);
         //var s_data = String(sensor_data)
         if (String(sensor_data).startsWith('s0:')) {
           displaySensorData(sensor_data.substring(3));
         }
-        else if (String(sensor_data).startsWith('=')) {
-          //displayClock(sensor_data);
+        if (String(gyro_data).startsWith('gyro:')) { // gyro graph draw
+          gyro_data = gyro_data.replace("gyro:", "");
+          displayGyroSensorData(gyro_data);
+          //displaySensorData()
         }
-        else {
-          // log message
-        }
+        // else {
+        //   // log message
+        // }
 
         //var clock = document.getElementById('clock');
         //clock.innerHTML = "rdata" + rdata; //rid++;
@@ -969,7 +985,14 @@
       function save_led_slot(cnt) {
         //console.log(JSON.stringify(matrixArr_[cnt]));
         let fname = window.prompt("save file name", "led_0");
-        Espruino.Core.File.saveFile(JSON.stringify(matrixArr_[cnt]), fname);
+        let saveArr = matrixArr_[cnt];
+        saveArr = saveArr.map((curr)=>{
+          if(curr == -1) {
+            curr = [0,0,0];
+          }
+          return curr;
+        })
+        Espruino.Core.File.saveFile(JSON.stringify(saveArr), fname);
       }
       function load_led_slot() {
         Espruino.Core.Utils.fileOpenDialog("code", "text", function(data) {

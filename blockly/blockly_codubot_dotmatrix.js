@@ -153,18 +153,16 @@ function getText() {
             }));
     })
 }
+let colorTxt = "";
+getText().then(function (result) {
+    colorTxt = result;
+    console.log(`colorTxt in then : ${colorTxt}`)
+})
 Blockly.JavaScript.draw_image = function (block) {
     let imageNum = Blockly.JavaScript.valueToCode(this, 'imageNum', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
-    let colorTxt = "";
-    getText().then(function (result) {
-        colorTxt = result;
-        console.log(`colorTxt in then : ${colorTxt}`)
-        
-    })
-    setTimeout(()=>{
-        console.log(`colorTxt out of then : ${colorTxt}`)
-    }, 1000);
-    return `print_every_line([${colorTxt}])`;
+    
+    
+    return `print_every_line(${colorTxt})`;
 }
 let rgb_array_total = new Array(7);
 let rgbStr = "";
