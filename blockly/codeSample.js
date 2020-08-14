@@ -114,7 +114,7 @@ var imu_loop = setInterval(function() {
 
 var FORWARD = 0; var BACKWARD = 1; var LEFT = 2; var RIGHT = 3;
 var DIST_TO_ANGLE = 33.216; // 1 cm = 33.216 deg, // 10.84 cm = 360 deg
-var ROBOT_ANGLE_TO_WHEEL_ANGLE = 3.651; // Robot 360 deg = Wheel 3.651 * 360 deg 
+var ROBOT_ANGLE_TO_WHEEL_ANGLE = 2.1086; // Robot 360 deg = Wheel 3.651 * 360 deg 
 var codubot_velocity = 50;
 
 function robot_move_dist(dir, vel, dist_cm, wait) {

@@ -132,35 +132,40 @@ Blockly.Blocks.draw_image = {
     init: function () {
         this.appendDummyInput()
             .appendField('Draw Image');
-        this.appendValueInput('imageNum')
-            .setCheck(["Number"])
-        // this.appendDummyInput()
-        //     .appendField(new Blockly.FieldDropdown([
-        //         ['#0', "0"],
-        //         ['#1', '1']
-        //     ]), "imageSelect")
+        this.appendDummyInput()
+            .appendField('Name : ')
+            .appendField(new Blockly.FieldTextInput('led_0', this.validate),
+            'imageName')
         this.setColour(10);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setInputsInline(true);
+    },
+    validate : function(newValue) {
+        getText(newValue).then(
+            function (result) {
+                colorTxt = result;
+                console.log(`colorTxt in then : ${colorTxt}`)
+            }
+        )
     }
 }
-function getText() {
+function getText(fileName) {
     return new Promise((resolve, reject)=>{
-        resolve(fetch("led_0.txt")
+        resolve(fetch(`${fileName}.txt`)
             .then(function (response) {
                 return response.text();
             }));
     })
 }
 let colorTxt = "";
-getText().then(function (result) {
-    colorTxt = result;
-    console.log(`colorTxt in then : ${colorTxt}`)
-})
-Blockly.JavaScript.draw_image = function (block) {
-    let imageNum = Blockly.JavaScript.valueToCode(this, 'imageNum', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
-    
+// getText().then(function (result) {
+//     colorTxt = result;
+//     console.log(`colorTxt in then : ${colorTxt}`)
+// })
+Blockly.JavaScript.draw_image = async function (block) {
+    // let imageName = Blockly.JavaScript.valueToCode(this, 'imageName', Blockly.JavaScript.ORDER_ASSIGNMENT) || '""';
+
     
     return `print_every_line(${colorTxt})`;
 }
