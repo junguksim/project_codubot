@@ -240,3 +240,89 @@ Blockly.JavaScript.draw_single_line = function (block) {
     return `print_single_line(${line}, [${rgb_str}]);\n`;
 }
 
+Blockly.Blocks.draw_every_line = {
+    category: 'Dot Matrix',
+    init: function () {
+        this.appendDummyInput()
+            .appendField('Draw Every Line');
+        this.appendDummyInput()
+            .appendField("1 Line Color : ")
+            .appendField(new Blockly.FieldColour(null), 'line_color_0')
+            .appendField(new Blockly.FieldColour(null), 'line_color_1')
+            .appendField(new Blockly.FieldColour(null), 'line_color_2')
+            .appendField(new Blockly.FieldColour(null), 'line_color_3')
+            .appendField(new Blockly.FieldColour(null), 'line_color_4')
+            .appendField(new Blockly.FieldColour(null), 'line_color_5')
+            .appendField(new Blockly.FieldColour(null), 'line_color_6')
+        this.appendDummyInput()
+            .appendField("2 Line Color : ")
+            .appendField(new Blockly.FieldColour(null), 'line_color_7')
+            .appendField(new Blockly.FieldColour(null), 'line_color_8')
+            .appendField(new Blockly.FieldColour(null), 'line_color_9')
+            .appendField(new Blockly.FieldColour(null), 'line_color_10')
+            .appendField(new Blockly.FieldColour(null), 'line_color_11')
+            .appendField(new Blockly.FieldColour(null), 'line_color_12')
+            .appendField(new Blockly.FieldColour(null), 'line_color_13')
+        this.appendDummyInput()
+            .appendField("3 Line Color : ")
+            .appendField(new Blockly.FieldColour(null), 'line_color_14')
+            .appendField(new Blockly.FieldColour(null), 'line_color_15')
+            .appendField(new Blockly.FieldColour(null), 'line_color_16')
+            .appendField(new Blockly.FieldColour(null), 'line_color_17')
+            .appendField(new Blockly.FieldColour(null), 'line_color_18')
+            .appendField(new Blockly.FieldColour(null), 'line_color_19')
+            .appendField(new Blockly.FieldColour(null), 'line_color_20')
+        this.appendDummyInput()
+            .appendField("4 Line Color : ")
+            .appendField(new Blockly.FieldColour(null), 'line_color_21')
+            .appendField(new Blockly.FieldColour(null), 'line_color_22')
+            .appendField(new Blockly.FieldColour(null), 'line_color_23')
+            .appendField(new Blockly.FieldColour(null), 'line_color_24')
+            .appendField(new Blockly.FieldColour(null), 'line_color_25')
+            .appendField(new Blockly.FieldColour(null), 'line_color_26')
+            .appendField(new Blockly.FieldColour(null), 'line_color_27')
+        this.appendDummyInput()
+            .appendField("5 Line Color : ")
+            .appendField(new Blockly.FieldColour(null), 'line_color_28')
+            .appendField(new Blockly.FieldColour(null), 'line_color_29')
+            .appendField(new Blockly.FieldColour(null), 'line_color_30')
+            .appendField(new Blockly.FieldColour(null), 'line_color_31')
+            .appendField(new Blockly.FieldColour(null), 'line_color_32')
+            .appendField(new Blockly.FieldColour(null), 'line_color_33')
+            .appendField(new Blockly.FieldColour(null), 'line_color_34')
+        this.appendDummyInput()
+            .appendField("6 Line Color : ")
+            .appendField(new Blockly.FieldColour(null), 'line_color_35')
+            .appendField(new Blockly.FieldColour(null), 'line_color_36')
+            .appendField(new Blockly.FieldColour(null), 'line_color_37')
+            .appendField(new Blockly.FieldColour(null), 'line_color_38')
+            .appendField(new Blockly.FieldColour(null), 'line_color_39')
+            .appendField(new Blockly.FieldColour(null), 'line_color_40')
+            .appendField(new Blockly.FieldColour(null), 'line_color_41')
+        this.appendDummyInput()
+            .appendField("7 Line Color : ")
+            .appendField(new Blockly.FieldColour(null), 'line_color_42')
+            .appendField(new Blockly.FieldColour(null), 'line_color_43')
+            .appendField(new Blockly.FieldColour(null), 'line_color_44')
+            .appendField(new Blockly.FieldColour(null), 'line_color_45')
+            .appendField(new Blockly.FieldColour(null), 'line_color_46')
+            .appendField(new Blockly.FieldColour(null), 'line_color_47')
+            .appendField(new Blockly.FieldColour(null), 'line_color_48')
+        this.setColour(10);
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+    }
+}
+let rgb_total = [];
+Blockly.JavaScript.draw_every_line = function (block) {
+    if(rgb_total.length!==0) rgb_total=[];
+    for(var i = 0 ; i < 49 ; i++) {
+        let hex = block.getFieldValue(`line_color_${i}`);
+        if(hex == "") {
+            hex = "000000";
+        }
+        let rgb = hexToRgb(hex);
+        rgb_total.push(`[${rgb.r}, ${rgb.g}, ${rgb.b}]`);
+    };
+    return `clear_dot_matrix();\nprint_every_line([${rgb_total}]);\n`;
+}
