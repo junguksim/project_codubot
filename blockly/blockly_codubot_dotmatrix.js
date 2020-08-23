@@ -76,7 +76,7 @@ Blockly.Blocks.draw_single_led = {
             .setCheck(["Number"])
         this.appendDummyInput()
             .appendField("Color : ")
-            .appendField(new Blockly.FieldColour(null, this.validate), 'single_led_color');
+            .appendField(new Blockly.FieldColour('FF0000', this.validate), 'single_led_color');
         this.setColour(10);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
@@ -111,7 +111,7 @@ Blockly.Blocks.print_string = {
         this.appendDummyInput()
             .appendField('Color');
         this.appendDummyInput()
-            .appendField(new Blockly.FieldColour(null, this.validate), 'print_string_color')
+            .appendField(new Blockly.FieldColour('FF0000', this.validate), 'print_string_color')
         this.setColour(10);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
@@ -126,7 +126,7 @@ Blockly.JavaScript.print_string = function (block) {
     let rgb_str = threeSplit(rgb_array_single.toString());
     return `set_string_color(${rgb_str});\nprint_string(${str});\n`;
 }
-// TODO : draw image
+
 Blockly.Blocks.draw_image = {
     category: 'Dot Matrix',
     init: function () {
@@ -189,13 +189,13 @@ Blockly.Blocks.draw_single_line = {
             ]), "whichLine")
         this.appendDummyInput()
             .appendField("Color : ")
-            .appendField(new Blockly.FieldColour(null), 'line_color_0')
-            .appendField(new Blockly.FieldColour(null), 'line_color_1')
-            .appendField(new Blockly.FieldColour(null), 'line_color_2')
-            .appendField(new Blockly.FieldColour(null), 'line_color_3')
-            .appendField(new Blockly.FieldColour(null), 'line_color_4')
-            .appendField(new Blockly.FieldColour(null), 'line_color_5')
-            .appendField(new Blockly.FieldColour(null), 'line_color_6')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_0')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_1')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_2')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_3')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_4')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_5')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_6')
         this.setColour(10);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
@@ -253,46 +253,46 @@ Blockly.Blocks.draw_every_line = {
         this.appendDummyInput()
             .appendField("1 Line Color : ")
             .appendField(new Blockly.FieldColour(null), 'line_color_0')
-            .appendField(new Blockly.FieldColour(null), 'line_color_1')
-            .appendField(new Blockly.FieldColour(null), 'line_color_2')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_1')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_2')
             .appendField(new Blockly.FieldColour(null), 'line_color_3')
-            .appendField(new Blockly.FieldColour(null), 'line_color_4')
-            .appendField(new Blockly.FieldColour(null), 'line_color_5')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_4')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_5')
             .appendField(new Blockly.FieldColour(null), 'line_color_6')
         this.appendDummyInput()
             .appendField("2 Line Color : ")
-            .appendField(new Blockly.FieldColour(null), 'line_color_7')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_7')
             .appendField(new Blockly.FieldColour(null), 'line_color_8')
             .appendField(new Blockly.FieldColour(null), 'line_color_9')
             .appendField(new Blockly.FieldColour(null), 'line_color_10')
             .appendField(new Blockly.FieldColour(null), 'line_color_11')
             .appendField(new Blockly.FieldColour(null), 'line_color_12')
-            .appendField(new Blockly.FieldColour(null), 'line_color_13')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_13')
         this.appendDummyInput()
             .appendField("3 Line Color : ")
-            .appendField(new Blockly.FieldColour(null), 'line_color_14')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_14')
             .appendField(new Blockly.FieldColour(null), 'line_color_15')
             .appendField(new Blockly.FieldColour(null), 'line_color_16')
             .appendField(new Blockly.FieldColour(null), 'line_color_17')
             .appendField(new Blockly.FieldColour(null), 'line_color_18')
             .appendField(new Blockly.FieldColour(null), 'line_color_19')
-            .appendField(new Blockly.FieldColour(null), 'line_color_20')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_20')
         this.appendDummyInput()
             .appendField("4 Line Color : ")
             .appendField(new Blockly.FieldColour(null), 'line_color_21')
-            .appendField(new Blockly.FieldColour(null), 'line_color_22')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_22')
             .appendField(new Blockly.FieldColour(null), 'line_color_23')
             .appendField(new Blockly.FieldColour(null), 'line_color_24')
             .appendField(new Blockly.FieldColour(null), 'line_color_25')
-            .appendField(new Blockly.FieldColour(null), 'line_color_26')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_26')
             .appendField(new Blockly.FieldColour(null), 'line_color_27')
         this.appendDummyInput()
             .appendField("5 Line Color : ")
             .appendField(new Blockly.FieldColour(null), 'line_color_28')
             .appendField(new Blockly.FieldColour(null), 'line_color_29')
-            .appendField(new Blockly.FieldColour(null), 'line_color_30')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_30')
             .appendField(new Blockly.FieldColour(null), 'line_color_31')
-            .appendField(new Blockly.FieldColour(null), 'line_color_32')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_32')
             .appendField(new Blockly.FieldColour(null), 'line_color_33')
             .appendField(new Blockly.FieldColour(null), 'line_color_34')
         this.appendDummyInput()
@@ -300,7 +300,7 @@ Blockly.Blocks.draw_every_line = {
             .appendField(new Blockly.FieldColour(null), 'line_color_35')
             .appendField(new Blockly.FieldColour(null), 'line_color_36')
             .appendField(new Blockly.FieldColour(null), 'line_color_37')
-            .appendField(new Blockly.FieldColour(null), 'line_color_38')
+            .appendField(new Blockly.FieldColour('FF0000'), 'line_color_38')
             .appendField(new Blockly.FieldColour(null), 'line_color_39')
             .appendField(new Blockly.FieldColour(null), 'line_color_40')
             .appendField(new Blockly.FieldColour(null), 'line_color_41')

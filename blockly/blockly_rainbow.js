@@ -56,7 +56,7 @@ Blockly.Blocks.rainbow_single_led = {
             .setCheck(["Number"])
         this.appendDummyInput()
             .appendField('Color')
-            .appendField(new Blockly.FieldColour(null), 'COLOUR');
+            .appendField(new Blockly.FieldColour('FF0000'), 'COLOUR');
         this.setColour(200);
         this.setNextStatement(true);
         this.setInputsInline(true);
@@ -113,7 +113,7 @@ Blockly.Blocks.rainbow_all_led = {
             .appendField('Show all ')
         this.appendDummyInput()
             .appendField('Color')
-            .appendField(new Blockly.FieldColour(null), 'COLOUR_ALL');
+            .appendField(new Blockly.FieldColour('FF0000'), 'COLOUR_ALL');
         this.setColour(200);
         this.setNextStatement(true);
         this.setInputsInline(true);
