@@ -198,7 +198,7 @@ Blockly.Blocks.robot_stop = {
 Blockly.JavaScript.robot_stop = function () {
     return "robot_stop();\n"
 }
-let irValid = false;
+
 Blockly.Blocks.ir_sensor = {
     category: 'CoduBot',
     init: function () {

@@ -785,7 +785,7 @@
           $(aa).data('led', null);
           
         }
-        Espruino.Core.Terminal.typeCharacters(`print_string(" ")\n`)
+        Espruino.Core.Terminal.typeCharacters(`clear_dot_matrix();\n`)
       }
       function setColor(el) {
         let hexColor = pickedHexColor;
